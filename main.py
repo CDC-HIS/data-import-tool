@@ -7,6 +7,20 @@ import csv
 import os  # Import os to handle file operations
 from ethiopian_date import EthiopianDateConverter
 from ttkthemes import ThemedTk
+import os
+import sys
+
+
+def resource_path(relative_path):
+    """ Get the absolute path to the resource (works for development and PyInstaller) """
+    if hasattr(sys, '_MEIPASS'):
+        # PyInstaller extracts files to a temp folder
+        return os.path.join(sys._MEIPASS, relative_path)
+    else:
+        # Running in development
+        return os.path.join(os.path.abspath("."), relative_path)
+    
+sql_file_path = resource_path("queries.sql")
 
 # MySQL credentials
 DB_HOST = "localhost"
@@ -135,7 +149,7 @@ def run_query():
     # Read queries from external file
     queries = {}
     try:
-        with open("queries.sql", "r") as f:
+        with open(sql_file_path, "r") as f:
             query_data = f.read().strip().split(";")
             for i, q in enumerate(query_data):
                 q = q.strip()
