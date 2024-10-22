@@ -46,8 +46,8 @@ WITH FollowUp AS (select follow_up.encounter_id,
                         FROM FollowUp
                         WHERE follow_up_status IS NOT NULL
                           AND art_start_date IS NOT NULL
-                          AND follow_up_date <= END_DATE -- '2024-01-01' -- endDate
-                          AND treatment_end_date >= END_DATE -- '2024-01-01'
+                          AND follow_up_date <= END_DATE -- END_DATE -- endDate
+                          AND treatment_end_date >= END_DATE -- END_DATE
                           AND follow_up_status in ('Alive', 'Restart medication') -- alive restart
      ),
      latestDSD_tmp AS (SELECT PatientId,
@@ -57,7 +57,7 @@ WITH FollowUp AS (select follow_up.encounter_id,
                           ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY assessment_date DESC , encounter_id DESC ) AS row_num
                    FROM FollowUp
                    WHERE assessment_date IS NOT NULL
-                     AND assessment_date <= END_DATE -- '2024-01-01'
+                     AND assessment_date <= END_DATE -- END_DATE
      ),
 
      latestDSD AS (select * from latestDSD_tmp where row_num = 1),
@@ -108,7 +108,7 @@ select sex,
        breast_feeding_status as BreastFeeding,
        LMP_Date,
        LMP_Date as LMP_Date_GC,
-       FLOOR(DATEDIFF('2024-09-30',art_start_date)/30.4375) AS MonthsOnART,
+       FLOOR(DATEDIFF(END_DATE',art_start_date)/30.4375) AS MonthsOnART,
        stages_of_disclosure as ChildDisclosueStatus,
        FollowUp.PatientId,
        latestDSD.dsd_category as dsd_category
@@ -129,8 +129,22 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                          art_antiretroviral_start_date       art_start_date,
                          viral_load_test_status,
                          hiv_viral_load                   AS viral_load_count,
-                         routine_viral_load_test_indication,
-                         targeted_viral_load_test_indication,
+                         COALESCE(
+                                 at_3436_weeks_of_gestation,
+                                 viral_load_after_eac_confirmatory_viral_load_where_initial_v,
+                                 viral_load_after_eac_repeat_viral_load_where_initial_viral_l,
+                                 every_six_months_until_mtct_ends,
+                                 six_months_after_the_first_viral_load_test_at_postnatal_peri,
+                                 three_months_after_delivery,
+                                 at_the_first_antenatal_care_visit,
+                                 annual_viral_load_test,
+                                 second_viral_load_test_at_12_months_post_art,
+                                 first_viral_load_test_at_6_months_or_longer_post_art,
+                                 first_viral_load_test_at_3_months_or_longer_post_art
+                         )                                AS routine_viral_load_test_indication,
+                         COALESCE(repeat_or_confirmatory_vl_initial_viral_load_greater_than_10,
+                                  suspected_antiretroviral_failure
+                         )                                AS targeted_viral_load_test_indication,
                          viral_load_test_indication,
                          pregnancy_status,
                          currently_breastfeeding_child    AS breastfeeding_status,
@@ -169,7 +183,8 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                                           WHEN FollowUp.viral_load_perform_date IS NOT NULL
                                               THEN FollowUp.viral_load_perform_date
                                           END                                                                                             AS viral_load_ref_date, -- Q this should be null?
-                                      viral_load_test_indication,
+                                      routine_viral_load_test_indication,
+                                      targeted_viral_load_test_indication,
                                       ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY viral_load_perform_date DESC, encounter_id DESC) AS row_num
                                FROM FollowUp
                                WHERE follow_up_status IS NOT NULL
@@ -184,7 +199,7 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                               FROM FollowUp
                               WHERE follow_up_status IS NOT NULL
                                 AND art_start_date IS NOT NULL
-                                AND follow_up_date <= END_DATE -- '2024-01-01' -- endDate
+                                AND follow_up_date <= END_DATE -- END_DATE -- endDate
      ),
      latest_follow_up AS (select * from latest_follow_up_tmp where row_num = 1),
      vl_performed_date as (select * from vl_performed_date_tmp where row_num = 1),
@@ -205,42 +220,40 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                                      WHEN pregnancy_status = 'Yes' THEN 'Yes'
                                      WHEN breastfeeding_status = 'Yes' THEN 'Yes'
                                      ELSE 'No' END AS PMTCT_ART,
-                                 vlperfdate.viral_load_test_indication,
                                  vlperfdate.viral_load_count,
                                  vlperfdate.viral_load_perform_date,
                                  vlperfdate.viral_load_ref_date,
                                  vlperfdate.viral_load_test_status,
                                  sex,
                                  FollowUp.weight,
-                                 routine_viral_load_test_indication,
-                                 targeted_viral_load_test_indication
+                                 vlperfdate.routine_viral_load_test_indication,
+                                 vlperfdate.targeted_viral_load_test_indication
 
                           FROM FollowUp
                                    INNER JOIN latest_follow_up ON latest_follow_up.encounter_id = FollowUp.encounter_id
                                    LEFT JOIN vl_performed_date as vlperfdate
                                              ON vlperfdate.client_id = FollowUp.client_id)
 select sex,
-       weight                                                                     as Weight,
-       current_age                                                                as age,
+       weight                              as Weight,
+       current_age                         as age,
        date_hiv_confirmed,
-       art_start_date                                                             as art_start_date,
-       follow_up_date                                                             as FollowUpDate,
-       pregnancy_status                                                           as IsPregnant,
-       breastfeeding_status                                                       as BreastFeeding,
-       regimen                                                                    as ARVDispendsedDose,
-       regimen                                                                    as ARVRegimenLine,
-       arv_dispensed_dose                                                         as art_dose,
+       art_start_date                      as art_start_date,
+       follow_up_date                      as FollowUpDate,
+       pregnancy_status                    as IsPregnant,
+       breastfeeding_status                as BreastFeeding,
+       regimen                             as ARVDispendsedDose,
+       regimen                             as ARVRegimenLine,
+       arv_dispensed_dose                  as art_dose,
        next_visit_date,
        follow_up_status,
-       treatment_end_date                                                         as art_dose_End,
+       treatment_end_date                  as art_dose_End,
        viral_load_perform_date,
        viral_load_test_status,
        viral_load_count,
        viral_load_ref_date,
-       (routine_viral_load_test_indication + targeted_viral_load_test_indication) as ReasonForVLTest,
-       viral_load_test_indication,
+       CONCAT(IFNULL(routine_viral_load_test_indication, ''), ' ', IFNULL(targeted_viral_load_test_indication, '')) AS ReasonForVLTest,
        PMTCT_ART,
-       uuid                                                                       as PatientGUID
+       uuid                                as PatientGUID
 from vl_test_received
 where viral_load_perform_date is not null
   And viral_load_perform_date >= DATE_ADD(END_DATE, INTERVAL -365 DAY)
