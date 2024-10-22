@@ -108,7 +108,7 @@ select sex,
        breast_feeding_status as BreastFeeding,
        LMP_Date,
        LMP_Date as LMP_Date_GC,
-       FLOOR(DATEDIFF(END_DATE',art_start_date)/30.4375) AS MonthsOnART,
+       FLOOR(DATEDIFF(END_DATE,art_start_date)/30.4375) AS MonthsOnART,
        stages_of_disclosure as ChildDisclosueStatus,
        FollowUp.PatientId,
        latestDSD.dsd_category as dsd_category
