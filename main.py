@@ -90,7 +90,7 @@ def export_to_csv(queries, gregorian_start_date, gregorian_end_date):
             database=DB_NAME
         )
         cursor = conn.cursor()
-
+        print(gregorian_start_date, ' End ', gregorian_end_date)
         # Create a directory for CSV files if it doesn't exist
         if not os.path.exists('output_csv'):
             os.makedirs('output_csv')
