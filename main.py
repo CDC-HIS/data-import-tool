@@ -42,43 +42,10 @@ months = [
     "Yekatit", "Megabit", "Miyazia", "Ginbot", 
     "Sene", "Hamle", "Nehase", "Puagume"
 ]
-query_tag = ["TX_Curr_Line_List","DataSheet_VL_Test_Received_Line_List"]
+query_tag = ["TX_Curr_Line_List","DataSheet_VL_Test_Received_Line_List","AHD_Line_List"]
 
 # Map month names to their respective numeric values
 month_mapping = {name: index + 1 for index, name in enumerate(months)}
-
-def ethiopian_to_gregorian(year, month, day):
-    # Month mapping
-    month_lengths = [30] * 12 + [5]  # 12 months with 30 days, 1 month with 5 days
-    eth_year_offset = 8 if (year >= 8) else 7
-
-    # Calculate the Gregorian year
-    gregorian_year = year + eth_year_offset
-
-    # Calculate the total number of days in the Ethiopian year so far
-    days_in_ethiopian_year = sum(month_lengths[:month - 1]) + day
-
-    # Adjust for leap years
-    if year % 4 == 3 and month > 12:  # Leap year adjustment for 13th month
-        days_in_ethiopian_year += 1
-
-    # Calculate the Gregorian date by adding days to a base Gregorian date
-    base_gregorian_date = (1, 1, gregorian_year)  # Starting from January 1 of the Gregorian year
-    total_days = (base_gregorian_date[0] - 1) + (base_gregorian_date[1] - 1) * 30 + (base_gregorian_date[2] - 1) * 365 + days_in_ethiopian_year
-
-    # Convert total days to a Gregorian date
-    gregorian_month = 1
-    while total_days > 30:
-        total_days -= 30
-        gregorian_month += 1
-
-    # Calculate the final day and adjust the month if it goes beyond 12
-    gregorian_day = total_days
-    if gregorian_month > 12:
-        gregorian_month -= 12
-        gregorian_year += 1
-
-    return (gregorian_year, gregorian_month, gregorian_day)
 
 # Function to run the selected SQL query and export the result to separate CSV files
 def export_to_csv(queries, gregorian_start_date, gregorian_end_date):
