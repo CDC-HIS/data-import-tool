@@ -42,7 +42,8 @@ months = [
     "Yekatit", "Megabit", "Miyazia", "Ginbot", 
     "Sene", "Hamle", "Nehase", "Puagume"
 ]
-query_tag = ["TX_Curr_Line_List","DataSheet_VL_Test_Received_Line_List","AHD_Line_List"]
+query_tag = ["TX_Curr_Line_List","DataSheet_VL_Test_Received_Line_List",
+             "AHD_Line_List","HVL_Line_List","VL_Eligibility_Line_List","TPT_Line_List"]
 
 # Map month names to their respective numeric values
 month_mapping = {name: index + 1 for index, name in enumerate(months)}
