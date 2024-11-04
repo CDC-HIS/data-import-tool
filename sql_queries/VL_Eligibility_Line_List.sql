@@ -187,6 +187,11 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                                vlsentdate.VL_Sent_Date                       as viral_load_sent_date,
                                vlperfdate.viral_load_status                  as viral_load_status,
                                current_age,
+                               f_case.weight,
+                               arv_dispensed_dose,
+                               f_case.regimen,
+                               f_case.next_visit_date,
+                               f_case.treatment_end_date,
                                CASE
                                    WHEN vlsentdate.VL_Sent_Date IS NOT NULL
                                        THEN vlsentdate.VL_Sent_Date
