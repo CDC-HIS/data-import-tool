@@ -31,24 +31,24 @@ def load_config(config_path):
 def read_csv_files_based_on_config(directory, config):
     file_pattern = os.path.join(directory, "*.csv")
     matching_files = glob.glob(file_pattern)
-
+    
     if not matching_files:
         print("No CSV files found in the directory.")
         return None
-
+    
     csv_data_by_report = {}
-
+    
     for csv_file_path in matching_files:
         filename = os.path.basename(csv_file_path).replace(".csv", "")
         parts = filename.split("_")
         if len(parts) < 3:
             print(f"Skipping file with unexpected format: {filename}")
             continue
-
+        
         report_name = "_".join(parts[:-2])  # Extract report name without month/year
         month = parts[-2]  # Extract the month part
         year = parts[-1]  # Extract the year part
-
+        
         # Check if the report name is in the config file
         if report_name in config:
             # Read the CSV file
@@ -59,7 +59,7 @@ def read_csv_files_based_on_config(directory, config):
                 data.append(headers)
                 for row in reader:
                     data.append(row)
-
+            
             csv_data_by_report[report_name] = {
                 "description": config[report_name],
                 "month": month,
@@ -68,24 +68,24 @@ def read_csv_files_based_on_config(directory, config):
             }
         else:
             print(f"Report name '{report_name}' not found in the configuration file.")
-
+    
     return csv_data_by_report
 
 
 # Main execution block
 with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
     cursor = conn.cursor()
-
+    
     # Load configuration
     config_path = "output.json"
     config = load_config(config_path)
-
+    
     # Specify the directory containing CSV files
     directory = "output_csv"
-
+    
     # Read CSV files based on the config
     csv_data = read_csv_files_based_on_config(directory, config)
-
+    
     # Print a preview of the loaded data
     if csv_data:
         for report, content in csv_data.items():
@@ -115,7 +115,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                     %(LMP_Date)s, %(LMP_Date_GC)s, %(MonthsOnART)s, %(ChildDisclosueStatus)s, %(DSD_Category)s
                 );
                 """
-
+                
                 # Execute insert for each row in the data
                 for row in content['data'][1:]:  # Skip headers
                     values = {
@@ -162,13 +162,13 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                 delete_existing = "DELETE FROM Tx_Curr_TPT_LineList WHERE HMISCode = '{}' AND ReportYear = '{}' AND ReportMonth = '{}'".format(
                     HMIS_CODE, content['year'], content['month']
                 )
-
+                
                 # Execute the DELETE statement
                 try:
                     cursor.execute(delete_existing)
                 except Exception as e:
                     print(f"Error executing delete statement: {e}")
-
+                
                 # Define the INSERT query
                 insert_query = """
                 INSERT INTO Tx_Curr_TPT_LineList (Region, Woreda, Facility, HMISCode, ReportYear, ReportMonth, Sex, Weight, Age, TPT_Started_Date, TPT_Completed_Date, TPT_Type, TPT_TypeAlt, TPT_TypeChar, HIV_Confirmed_Date, ART_Start_Date, FollowUpDate, Transfer_In, ARTDoseDays, Next_visit_Date, FollowupStatus, FollowupStatusChar, ARTDoseEndDate, PatientGUID, WHOStage, AdultCD4Count, ChildCD4Count, CPT_StartDate, CPT_StartDate_GC, CPT_StopDate, CPT_StopDate_GC, TB_SpecimenType, ActiveTBDiagnosed, ActiveTBDignosedDate, ActiveTBDignosedDate_GC, TBTx_StartDate, TBTx_StartDate_GC, TBTx_CompletedDate, TBTx_CompletedDate_GC, FluconazoleStartDate, FluconazoleStartDate_GC, FluconazoleEndDate, FluconazoleEndDate_GC)
@@ -236,7 +236,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                         VALUES (%(Region)s,%(Woreda)s, %(Facility)s, %(HMISCode)s, %(ReportYear)s, %(ReportMonth)s, %(Sex)s, %(Weight)s, %(Age)s, %(PatientGUID)s, %(Height)s, %(HIV_Confirmed_Date)s, %(ARTStartDate)s, %(MonthsOnART)s, %(FollowUpDate)s, %(WHOStage)s, %(CD4Count)s, %(ARTDoseDays)s, %(ARVRegimen)s, %(FollowupStatus)s, %(AdheranceLevel)s, %(IsPregnant)s, %(FpMethodUsed)s, %(CrAg)s, %(NutritionalStatus)s, %(FunctionalStatus)s, %(No_OI)s, %(Zoster)s, %(Bacterial_Pneumonia)s, %(Extra_Pulmonary_TB)s, %(Oesophageal_Candidiasis)s, %(Vaginal_Candidiasis)s, %(Mouth_Ulcer)s, %(Chronic_Diarrhea)s, %(Acute_Diarrhea)s, %(CNS_Toxoplasmosis)s, %(Cryptococcal_Meningitis)s, %(Kaposi_Sarcoma)s, %(Cervical_Cancer)s, %(Pulmonary_TB)s, %(Oral_Candidiasis)s, %(Pneumocystis_Pneumonia)s, %(NonHodgkins_Lymphoma)s, %(Genital_Ulcer)s, %(OI_Other)s, %(Med1)s, %(Med2)s, %(CotrimoxazoleStartDate)s, %(cortimoxazole_stop_date)s, %(Fluconazole_Start_Date)s, %(Fluconazole_End_Date)s, %(TPT_Type)s, %(inhprophylaxis_started_date)s, %(InhprophylaxisCompletedDate)s,
                        %(TPT_DoseDaysNumberALT)s, %(TPT_DoseDaysNumberINH)s, %(TPT_Dispensed_Dose)s, %(TPT_SideEffect)s, %(TPT_Adherence)s, %(tb_screened)s, %(tb_screening_result)s, %(TB_Diagnostic_Result)s, %(LF_LAM_result)s, %(Gene_Xpert_result)s, %(Smear_Microscopy_Result)s, %(Additional_TB_Diagnostic_Test_Result)s, %(Active_TB)s, %(ActiveTBTreatmentStartDate)s, %(ActiveTBTreatmentCompletedDate)s,%(ActiveTBTreatmentDiscontinuedDate)s, %(Viral_Load_Perform_Date)s, %(Viral_Load_Status)s, %(Viral_Load_count)s, %(VL_Sent_Date)s, %(Viral_Load_Ref_Date)s, %(CCA_Screened)s, %(DSD_Category)s, %(AHD)s);
                 """
-
+                
                 for row in content['data'][1:]:  # Skip headers
                     values = {
                         "Region": 'Region',
@@ -387,7 +387,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                     %(date_eac_provided_3)s, %(viral_load_sent_date_cf)s, %(viral_load_perform_date_cf)s, %(viral_load_status_cf)s, %(viral_load_count_cf)s,
                     %(routine_viral_load_cf)s, %(target_cf)s, %(PatientGUID)s        );
                 """
-
+                
                 for row in content['data'][1:]:  # Skip headers
                     values = {
                         "Region": 'Region',
@@ -475,7 +475,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                         "PatientGUID": row[11]
                     }
                     cursor.execute(insert_query, values)
-
+    
     # Commit the transaction
     conn.commit()
     cursor.close()
