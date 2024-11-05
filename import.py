@@ -91,7 +91,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
         for report, content in csv_data.items():
             # print(f"\nData for {report} ({content['description']}, Month: {content['month']}, Year: {content['year']}):")
             if report == "TX_Curr_Line_List":
-                HMIS_CODE = 'hmis'
+                HMIS_CODE = content['data'][2][-1]
                 delete_existing = "DELETE FROM Tx_Curr_LineList WHERE HMISCode = '{}' AND ReportYear = '{}' AND ReportMonth = '{}'".format(
                     HMIS_CODE, content['year'], content['month'])
                 cursor.execute(delete_existing)
@@ -119,10 +119,10 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                 # Execute insert for each row in the data
                 for row in content['data'][1:]:  # Skip headers
                     values = {
-                        "Region": 'region',
-                        "Woreda": 'woreda',
-                        "Facility": 'facility',
-                        "HMISCode": 'hmis',
+                        "Region": row[-4],
+                        "Woreda": row[-3],
+                        "Facility": row[-2],
+                        "HMISCode": row[-1],
                         "ReportYear": content['year'],
                         "ReportMonth": content['month'],
                         "Sex": row[0],
@@ -158,7 +158,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                     }
                     cursor.execute(insert_query, values)
             if report == "TPT_Line_List":
-                HMIS_CODE = 'hmis'
+                HMIS_CODE = content['data'][2][-1]
                 delete_existing = "DELETE FROM Tx_Curr_TPT_LineList WHERE HMISCode = '{}' AND ReportYear = '{}' AND ReportMonth = '{}'".format(
                     HMIS_CODE, content['year'], content['month']
                 )
@@ -176,10 +176,10 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                 """
                 for row in content['data'][1:]:  # Skip headers
                     values = {
-                        "Region": 'region',
-                        "Woreda": 'woreda',
-                        "Facility": 'facility',
-                        "HMISCode": 'hmis',
+                        "Region": row[-4],
+                        "Woreda": row[-3],
+                        "Facility": row[-2],
+                        "HMISCode": row[-1],
                         "ReportYear": content['year'],
                         "ReportMonth": content['month'],
                         "Sex": row[0],
@@ -222,7 +222,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                     }
                     cursor.execute(insert_query, values)
             if report == "AHD_Line_List":
-                HMIS_CODE = 'hmis'
+                HMIS_CODE = content['data'][2][-1]
                 delete_existing = "DELETE FROM Tx_Curr_AHD_LineList WHERE HMISCode = '{}' AND ReportYear = '{}' AND ReportMonth = '{}'".format(
                     HMIS_CODE, content['year'], content['month'])
                 # Execute the DELETE statement
@@ -239,10 +239,10 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                 
                 for row in content['data'][1:]:  # Skip headers
                     values = {
-                        "Region": 'Region',
-                        "Woreda": 'woreda',
-                        "Facility": 'facility',
-                        "HMISCode": HMIS_CODE,
+                        "Region": row[-4],
+                        "Woreda": row[-3],
+                        "Facility": row[-2],
+                        "HMISCode": row[-1],
                         "ReportYear": content['year'],
                         "ReportMonth": content['month'],
                         "Sex": row[0],
@@ -320,7 +320,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                     }
                     cursor.execute(insert_query, values)
             if report == "DataSheet_VL_Test_Received_Line_List":
-                HMIS_CODE = 'hmis'
+                HMIS_CODE = content['data'][2][-1]
                 delete_existing = "DELETE FROM Tx_Curr_VLTestReceived_LineList WHERE HMISCode = '{}' AND ReportYear = '{}' AND ReportMonth = '{}'".format(
                     HMIS_CODE, content['year'], content['month'])
                 # Execute the DELETE statement
@@ -334,10 +334,10 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                 """
                 for row in content['data'][1:]:  # Skip headers
                     values = {
-                        "Region": 'Region',
-                        "Woreda": 'Woreda',
-                        "Facility": 'Facility',
-                        "HMISCode": 'HMISCode',
+                        "Region": row[-4],
+                        "Woreda": row[-3],
+                        "Facility": row[-2],
+                        "HMISCode": row[-1],
                         "ReportYear": content['year'],
                         "ReportMonth": content['month'],
                         "Sex": row[0],
@@ -364,7 +364,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                     }
                     cursor.execute(insert_query, values)
             if report == "HVL_Line_List":
-                HMIS_CODE = 'hmis'
+                HMIS_CODE = content['data'][2][-1]
                 delete_existing = "DELETE FROM Tx_Curr_HVL_LineList WHERE HMISCode = '{}' AND ReportYear = '{}' AND ReportMonth = '{}'".format(
                     HMIS_CODE, content['year'], content['month'])
                 # Execute the DELETE statement
@@ -390,10 +390,10 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                 
                 for row in content['data'][1:]:  # Skip headers
                     values = {
-                        "Region": 'Region',
-                        "Woreda": 'Woreda',
-                        "Facility": 'Facility',
-                        "HMISCode": 'HMISCode',
+                        "Region": row[-4],
+                        "Woreda": row[-3],
+                        "Facility": row[-2],
+                        "HMISCode": row[-1],
                         "ReportYear": content['year'],
                         "ReportMonth": content['month'],
                         "Sex": row[0],
@@ -429,7 +429,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                     }
                     cursor.execute(insert_query, values)
             if report == "VL_Eligibility_Line_List":
-                HMIS_CODE = 'hmis'
+                HMIS_CODE = content['data'][2][-1]
                 delete_existing = "DELETE FROM Tx_Curr_VLEligible_LineList WHERE HMISCode = '{}' AND ReportYear = '{}' AND ReportMonth = '{}'".format(
                     HMIS_CODE, content['year'], content['month'])
                 # Execute the DELETE statement
@@ -447,10 +447,10 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                 """
                 for row in content['data'][1:]:  # Skip headers
                     values = {
-                        "Region": 'Region',
-                        "Woreda": 'Woreda',
-                        "Facility": 'Facility',
-                        "HMISCode": 'HMISCode',
+                        "Region": row[-4],
+                        "Woreda": row[-3],
+                        "Facility": row[-2],
+                        "HMISCode": row[-1],
                         "ReportYear": content['year'],
                         "ReportMonth": content['month'],
                         "Sex": row[13],

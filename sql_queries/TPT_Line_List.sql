@@ -118,7 +118,7 @@ WITH FollowUp AS (SELECT follow_up.encounter_id,
                           INNER JOIN latest_follow_up ON f_case.encounter_id = latest_follow_up.encounter_id)
 
 select tmp_tpt.gender                            as Sex,
-       tmp_tpt.weight_in_kg,
+       tmp_tpt.weight_in_kg as Weight,
        tmp_tpt.age                               AS Age,
        tpt_start.inhprophylaxis_started_date     As TPT_Started_Date,
        tpt_completed.InhprophylaxisCompletedDate As TPT_Completed_Date,
@@ -129,9 +129,9 @@ select tmp_tpt.gender                            as Sex,
            WHEN tpt_type.TptType = '3HP' THEN '3HP'
            ELSE '' END                           AS TPT_TypeChar,
 
-       tmp_tpt.hiv_confirmed_date,
+       tmp_tpt.hiv_confirmed_date as date_hiv_confirmed,
        tmp_tpt.art_start_date,
-       tmp_tpt.followup_date,
+       tmp_tpt.followup_date as FollowUpDate,
 #        #temp3.transferin                                                                    As Transfer_In,
        tmp_tpt.artdosecode                       As ARTDoseDays,
        tmp_tpt.next_visit_date,

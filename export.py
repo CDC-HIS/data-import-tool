@@ -37,7 +37,17 @@ root.eval('tk::PlaceWindow . center')
 
 months = ["Meskerem", "Tikimt", "Hidar", "Tahsas", "Tir", "Yekatit", "Megabit", "Miyazia", "Ginbot", "Sene", "Hamle", "Nehase", "Puagume"]
 month_mapping = {name: index + 1 for index, name in enumerate(months)}
-
+facility_details_query = """
+select state_province as Region, city_village as Woreda, mamba_dim_location.name as Facility from mamba_fact_location_tag
+join mamba_fact_location_tag_map on mamba_fact_location_tag.location_tag_id=mamba_fact_location_tag_map.location_tag_id
+join mamba_dim_location on mamba_dim_location.location_id = mamba_fact_location_tag_map.location_id where mamba_fact_location_tag.name='Facility Location';
+"""
+hmiscode_query="""
+select value_reference as HMISCode from mamba_fact_location_attribute
+join mamba_fact_location_attribute_type on mamba_fact_location_attribute.attribute_type_id=mamba_fact_location_attribute_type.location_attribute_type_id
+where name='hmiscode';
+"""
+additional_columns = ['Region', 'Woreda', 'Facility', 'HMISCode']
 def read_sql_file(file_path):
     """ Read and return the content of a SQL file """
     try:
@@ -58,18 +68,21 @@ def export_to_csv(queries, gregorian_start_date, gregorian_end_date):
         cursor = conn.cursor()
         if not os.path.exists('output_csv'):
             os.makedirs('output_csv')
-
         for query_name, query in queries.items():
+            cursor.execute(facility_details_query)
+            facility_details = cursor.fetchall()
+            cursor.execute(hmiscode_query)
+            hmiscode = cursor.fetchall()
             formatted_query = query.replace("REPORT_END_DATE", f"'{gregorian_end_date}'").replace("REPORT_START_DATE", f"'{gregorian_start_date}'")
             cursor.execute(formatted_query)
             results = cursor.fetchall()
-
+            modified_results = [row + (facility_details[0][0], facility_details[0][1],facility_details[0][2],hmiscode[0][0]) for row in results]
             csv_file_path = os.path.join('output_csv', f"{query_name}_{combo_month.get()}_{entry_year.get()}.csv")
-            if results:
+            if modified_results:
                 with open(csv_file_path, mode='w', newline='') as file:
                     writer = csv.writer(file)
-                    writer.writerow([i[0] for i in cursor.description])
-                    writer.writerows(results)
+                    writer.writerow([i[0] for i in cursor.description]+additional_columns)
+                    writer.writerows(modified_results)
             else:
                 messagebox.showwarning("Warning", f"No data returned for {query_name}.")
 
