@@ -133,7 +133,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                         "Next_visit_Date": row[5],
                         "Next_visit_Date_GC": row[6],
                         "ARVRegimen": row[7],
-                        "RegimensLine": row[7][:2],
+                        "RegimensLine": row[7][:1],
                         "ARTDoseDays": row[8],
                         "FollowupStatus": row[9],
                         "ARTDoseEndDate": row[10],
@@ -349,7 +349,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                         "IsPregnant": row[6],
                         "Breastfeeding": row[7],
                         "ARVDispendsedDose": row[8],
-                        "ARVRegimensLine": row[9][:2],
+                        "ARVRegimensLine": row[9][:1],
                         "ARTDoseDays": row[10],
                         "next_visit_date": row[11],
                         "follow_up_status": row[12],
@@ -475,7 +475,10 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                         "PatientGUID": row[11]
                     }
                     cursor.execute(insert_query, values)
-    
+    sp_query = f"""
+        EXEC SP_AggregateHivindicators '{content['data'][2][-4]}', '{content['data'][2][-3]}', '{content['data'][2][-2]}', '{content['data'][2][-1]}', '{content['year']}', '{content['month']}'
+        """
     # Commit the transaction
     conn.commit()
     cursor.close()
+    

@@ -6,7 +6,9 @@ WITH FollowUp AS (select follow_up.encounter_id,
                          assessment_date,
                          treatment_end_date,
                          antiretroviral_art_dispensed_dose_i AS ARTDoseDays,
-                         sex,
+                         CASE
+                             WHEN sex='FEMALE' THEN 'F'
+                             WHEN sex='MALE'    THEN 'M' END AS sex ,
                          current_age                         AS Age,
                          weight_text_                        AS Weight,
                          screening_test_result_tuberculosis  AS TB_SreeningStatus,
