@@ -4,6 +4,10 @@ import csv
 import glob
 import os
 import json
+import logging
+import shutil
+import hashlib
+import zipfile
 
 # Database connection parameters
 DRIVER = "ODBC Driver 17 for SQL Server"
@@ -12,6 +16,12 @@ DB_USER = "sa"
 DB_PASS = "Abcd@1234"
 DB_NAME = "AggregateDB"
 
+# Configure logging
+logging.basicConfig(
+    filename='import_tool.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 # Load configuration file for report name mappings
 def load_config(config_path):
@@ -20,20 +30,75 @@ def load_config(config_path):
             config = json.load(config_file)
         return config
     except FileNotFoundError:
-        print(f"Configuration file {config_path} not found.")
+        logging.error(f"Configuration file {config_path} not found.")
         return {}
     except json.JSONDecodeError:
-        print("Error decoding JSON configuration file.")
+        logging.error("Error decoding JSON configuration file.")
         return {}
 
 
+def calculate_checksum(file_path):
+    """Calculates the SHA-256 checksum of a file."""
+    sha256_hash = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        for byte_block in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(byte_block)
+    return sha256_hash.hexdigest()
+
+
+def verify_zip_files(directory):
+    """Verifies all zip files in the directory against their checksum files."""
+    zip_files = glob.glob(os.path.join(directory, "*.zip"))
+    
+    if not zip_files:
+        print("No zip files found in the directory.")
+        return
+    
+    for zip_path in zip_files:
+        # Derive the corresponding checksum file path
+        checksum_path = f"{zip_path}_checksum.txt".replace(".zip","")
+        
+        if not os.path.exists(checksum_path):
+            print(f"No checksum file found for: {zip_path}")
+            continue
+        
+        # Calculate the actual checksum of the zip file
+        actual_checksum = calculate_checksum(zip_path)
+        
+        # Read the expected checksum from the checksum file
+        with open(checksum_path, "r") as checksum_file:
+            expected_checksum = checksum_file.read().strip()
+        
+        # Compare checksums
+        if actual_checksum == expected_checksum:
+            logging.info(f"{os.path.basename(zip_path)}: Checksum verified successfully.")
+            extract_zip_without_directory(zip_path, directory)
+        else:
+            logging.error(f"{os.path.basename(zip_path)}: Checksum verification failed.")
+
+
+def extract_zip_without_directory(zip_path, target_directory):
+    """
+    Extracts all files from the zip file at zip_path into target_directory
+    without preserving directory structure.
+    """
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        for member in zip_ref.namelist():
+            # Check if it is a file (not a directory)
+            if not member.endswith('/'):
+                # Define the full path for the extracted file
+                extracted_path = os.path.join(target_directory, os.path.basename(member))
+                
+                # Extract the file content to the specified path
+                with open(extracted_path, 'wb') as output_file:
+                    output_file.write(zip_ref.read(member))
 # Read CSV files based on report_name mappings from config and include month/year
 def read_csv_files_based_on_config(directory, config):
     file_pattern = os.path.join(directory, "*.csv")
     matching_files = glob.glob(file_pattern)
     
     if not matching_files:
-        print("No CSV files found in the directory.")
+        logging.error("No CSV files found in the directory.")
         return None
     
     csv_data_by_report = {}
@@ -42,13 +107,12 @@ def read_csv_files_based_on_config(directory, config):
         filename = os.path.basename(csv_file_path).replace(".csv", "")
         parts = filename.split("_")
         if len(parts) < 3:
-            print(f"Skipping file with unexpected format: {filename}")
+            logging.error(f"Skipping file with unexpected format: {filename}")
             continue
         
-        report_name = "_".join(parts[:-2])  # Extract report name without month/year
+        report_name = "_".join(parts[:-3])  # Extract report name without month/year
         month = parts[-2]  # Extract the month part
         year = parts[-1]  # Extract the year part
-        
         # Check if the report name is in the config file
         if report_name in config:
             # Read the CSV file
@@ -67,10 +131,29 @@ def read_csv_files_based_on_config(directory, config):
                 "data": data
             }
         else:
-            print(f"Report name '{report_name}' not found in the configuration file.")
+            logging.error(f"Report name '{report_name}' not found in the configuration file.")
     
     return csv_data_by_report
+def move_imported_file(file_pattern):
+    os.makedirs('processed_csv', exist_ok=True)
+    for file_path in glob.glob(file_pattern):
+        try:
+            # Construct the target path in 'processed_csv'
+            target_path = os.path.join('processed_csv', os.path.basename(file_path))
+            # Replace the file if it already exists
+            if os.path.exists(target_path):
+                os.replace(file_path, target_path)
+                logging.info(f"Replaced existing file: {target_path}")
+            else:
+                shutil.move(file_path, target_path)
+                logging.info(f"Moved file: {file_path} to {target_path}")
+        except OSError as e:
+            logging.error(f"Error moving file {file_path}: {e}")
+    return {}
 
+
+# Usage
+verify_zip_files('output_csv')
 
 # Main execution block
 with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
@@ -85,11 +168,10 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
     
     # Read CSV files based on the config
     csv_data = read_csv_files_based_on_config(directory, config)
-    
-    # Print a preview of the loaded data
+
     if csv_data:
         for report, content in csv_data.items():
-            # print(f"\nData for {report} ({content['description']}, Month: {content['month']}, Year: {content['year']}):")
+            logging.info(f"\nData for {report} ({content['description']}, Month: {content['month']}, Year: {content['year']}):")
             if report == "TX_Curr_Line_List":
                 HMIS_CODE = content['data'][2][-1]
                 delete_existing = "DELETE FROM Tx_Curr_LineList WHERE HMISCode = '{}' AND ReportYear = '{}' AND ReportMonth = '{}'".format(
@@ -167,7 +249,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                 try:
                     cursor.execute(delete_existing)
                 except Exception as e:
-                    print(f"Error executing delete statement: {e}")
+                    logging.error(f"Error executing delete statement: {e}")
                 
                 # Define the INSERT query
                 insert_query = """
@@ -229,7 +311,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                 try:
                     cursor.execute(delete_existing)
                 except Exception as e:
-                    print(f"Error executing delete statement: {e}")
+                    logging.error(f"Error executing delete statement: {e}")
                 insert_query = """
                 INSERT INTO Tx_Curr_AHD_LineList (Region,Woreda, Facility, HMISCode, ReportYear, ReportMonth, Sex, Weight, Age, PatientGUID, Height, HIV_Confirmed_Date, ARTStartDate, MonthsOnART, FollowUpDate, WHOStage, CD4Count, ARTDoseDays, ARVRegimen, FollowupStatus, AdheranceLevel, IsPregnant, FpMethodUsed, CrAg, NutritionalStatus, FunctionalStatus, No_OI, Zoster, Bacterial_Pneumonia, Extra_Pulmonary_TB, Oesophageal_Candidiasis, Vaginal_Candidiasis, Mouth_Ulcer, Chronic_Diarrhea, Acute_Diarrhea, CNS_Toxoplasmosis, Cryptococcal_Meningitis, Kaposi_Sarcoma, Cervical_Cancer, Pulmonary_TB, Oral_Candidiasis, Pneumocystis_Pneumonia, NonHodgkins_Lymphoma, Genital_Ulcer, OI_Other, Med1, Med2, CotrimoxazoleStartDate, cortimoxazole_stop_date, Fluconazole_Start_Date, Fluconazole_End_Date, TPT_Type, inhprophylaxis_started_date, InhprophylaxisCompletedDate,
                         TPT_DoseDaysNumberALT, TPT_DoseDaysNumberINH, TPT_Dispensed_Dose, TPT_SideEffect, TPT_Adherence, tb_screened, tb_screening_result, TB_Diagnostic_Result, LF_LAM_result, Gene_Xpert_result, Smear_Microscopy_Result, Additional_TB_Diagnostic_Test_Result, Active_TB, ActiveTBTreatmentStartDate, ActiveTBTreatmentCompletedDate, ActiveTBTreatmentDiscontinuedDate, Viral_Load_Perform_Date, Viral_Load_Status, Viral_Load_count, VL_Sent_Date, Viral_Load_Ref_Date, CCA_Screened, DSD_Category, AHD)
@@ -327,7 +409,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                 try:
                     cursor.execute(delete_existing)
                 except Exception as e:
-                    print(f"Error executing delete statement: {e}")
+                    logging.error(f"Error executing delete statement: {e}")
                 insert_query = """
                 INSERT INTO Tx_Curr_VLTestReceived_LineList (Region, Woreda, Facility, HMISCode, ReportYear, ReportMonth, Sex, Weight, Age, date_hiv_confirmed, art_start_date, FollowUpDate, IsPregnant, Breastfeeding, ARVDispendsedDose, ARVRegimensLine, ARTDoseDays, next_visit_date, follow_up_status, art_dose_End, viral_load_perform_date, viral_load_status, viral_load_count, viral_load_ref_date, ReasonForVLTest, PMTCT_ART, PatientGUID )
                 VALUES (%(Region)s, %(Woreda)s, %(Facility)s, %(HMISCode)s, %(ReportYear)s, %(ReportMonth)s, %(Sex)s, %(Weight)s, %(Age)s, %(date_hiv_confirmed)s, %(art_start_date)s, %(FollowUpDate)s, %(IsPregnant)s, %(Breastfeeding)s, %(ARVDispendsedDose)s, %(ARVRegimensLine)s, %(ARTDoseDays)s, %(next_visit_date)s, %(follow_up_status)s, %(art_dose_End)s, %(viral_load_perform_date)s, %(viral_load_status)s, %(viral_load_count)s, %(viral_load_ref_date)s, %(ReasonForVLTest)s, %(PMTCT_ART)s, %(PatientGUID)s )
@@ -371,7 +453,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                 try:
                     cursor.execute(delete_existing)
                 except Exception as e:
-                    print(f"Error executing delete statement: {e}")
+                    logging.error(f"Error executing delete statement: {e}")
                 insert_query = """
                 INSERT INTO Tx_Curr_HVL_LineList (Region, Woreda, Facility, HMISCode, ReportYear, ReportMonth, Sex, Weight, Age,
                  date_hiv_confirmed, art_start_date, FollowUpDate, IsPregnant, ARVDispendsedDose, art_dose, next_visit_date, 
@@ -436,7 +518,7 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                 try:
                     cursor.execute(delete_existing)
                 except Exception as e:
-                    print(f"Error executing delete statement: {e}")
+                    logging.error(f"Error executing delete statement: {e}")
                 insert_query = """
                     INSERT INTO Tx_Curr_VLEligible_LineList (Region, Woreda, Facility, HMISCode, ReportYear, ReportMonth, Sex, Weight, Age, date_hiv_confirmed, art_start_date, FollowUpDate, IsPregnant, ARVDispendsedDose, art_dose, next_visit_date, follow_up_status, art_dose_End, viral_load_perform_date, viral_load_status, viral_load_count, viral_load_sent_date, viral_load_ref_date, date_regimen_change, eligiblityDate, PatientGUID )
                     VALUES (%(Region)s, %(Woreda)s, %(Facility)s, %(HMISCode)s, %(ReportYear)s, %(ReportMonth)s, %(Sex)s, %(Weight)s, %(Age)s, 
@@ -475,9 +557,13 @@ with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
                         "PatientGUID": row[11]
                     }
                     cursor.execute(insert_query, values)
-    sp_query = f"""
-        EXEC SP_AggregateHivindicators '{content['data'][2][-4]}', '{content['data'][2][-3]}', '{content['data'][2][-2]}', '{content['data'][2][-1]}', '{content['year']}', '{content['month']}'
-        """
+            file_pattern = os.path.join('output_csv',
+                                        f"*{content['data'][2][-2]}{content['data'][2][-1]}_{content['month']}_{content['year']}.csv")
+            move_imported_file(file_pattern)
+            sp_query = f"""
+            EXEC SP_AggregateHivindicators '{content['data'][2][-4]}', '{content['data'][2][-3]}', '{content['data'][2][-2]}', '{content['data'][2][-1]}', '{content['year']}', '{content['month']}'
+            """
+            cursor.execute(sp_query)
     # Commit the transaction
     conn.commit()
     cursor.close()

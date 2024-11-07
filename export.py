@@ -127,22 +127,23 @@ def export_to_csv(queries, gregorian_start_date, gregorian_end_date):
         progress['value'] = 0
         cursor.execute(facility_details_query)
         facility_details = cursor.fetchall()
-        facility_name = facility_details[0][2].replace(" ", "_")
-        woreda = facility_details[0][1].replace(" ", "_")
-        region = facility_details[0][0].replace(" ", "_")
+        facility_name = facility_details[0][2].replace(" ", "").replace("_", "")
+        woreda = facility_details[0][1].replace(" ", "").replace("_", "")
+        region = facility_details[0][0].replace(" ", "").replace("_", "")
         cursor.execute(hmiscode_query)
         hmiscode = cursor.fetchall()
+        hmiscode = hmiscode[0][0].replace(" ", "").replace("_", "")
         for idx, (query_name, query) in enumerate(queries.items(), start=1):
             formatted_query = query.replace("REPORT_END_DATE", f"'{gregorian_end_date}'").replace(
                 "REPORT_START_DATE", f"'{gregorian_start_date}'")
             cursor.execute(formatted_query)
             results = cursor.fetchall()
             modified_results = [row + (
-            region, woreda, facility_name, hmiscode[0][0])
+            region, woreda, facility_name, hmiscode)
                                 for row in results]
             
             csv_file_path = os.path.join('output_csv',
-                                         f"{query_name}_{facility_name}_{hmiscode[0][0]}_{combo_month.get()}_{entry_year.get()}.csv")
+                                         f"{query_name}_{facility_name}{hmiscode}_{combo_month.get()}_{entry_year.get()}.csv")
             if modified_results:
                 with open(csv_file_path, mode='w', newline='') as file:
                     writer = csv.writer(file)
@@ -160,16 +161,14 @@ def export_to_csv(queries, gregorian_start_date, gregorian_end_date):
         logging.info("Data exported to output_csv folder.")
         # ZIP generated files
         output_folder = "output_csv"
-        zip_files_with_checksum(output_folder, f"{facility_name}_{hmiscode[0][0]}_{combo_month.get()}_{entry_year.get()}")
+        zip_files_with_checksum(output_folder, f"{facility_name}{hmiscode}_{combo_month.get()}_{entry_year.get()}")
         # Delete generated files
-        file_pattern = os.path.join('output_csv', f"*{facility_name}_{hmiscode[0][0]}_{combo_month.get()}_{entry_year.get()}.csv")
+        file_pattern = os.path.join('output_csv', f"*{facility_name}{hmiscode}_{combo_month.get()}_{entry_year.get()}.csv")
         for file_path in glob.glob(file_pattern):
             try:
                 os.remove(file_path)
-                print(f"Deleted file: {file_path}")
                 logging.info(f"Deleted file: {file_path}")
             except OSError as e:
-                print(f"Error deleting file {file_path}: {e}")
                 logging.error(f"Error deleting file {file_path}: {e}")
     except mysql.connector.Error as err:
         messagebox.showerror("Error", f"Error: {err}")
