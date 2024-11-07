@@ -37,7 +37,7 @@ months = ["Meskerem", "Tikimt", "Hidar", "Tahsas", "Tir", "Yekatit", "Megabit", 
 month_mapping = {name: index + 1 for index, name in enumerate(months)}
 
 # Load query paths from a configuration file
-query_config_path = resource_path("queries_config.json")
+query_config_path = resource_path("export_config.json")
 with open(query_config_path, 'r') as config_file:
     query_paths = json.load(config_file)
     

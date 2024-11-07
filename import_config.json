@@ -1,0 +1,111 @@
+{
+    "Tx_Curr_AHD_LineList":  {
+        "description":"Description of AHD Line List",
+        "header_mapping": {
+            "Sex": "Sex",
+            "Weight": "Weight",
+            "Age": "Age"
+        }
+    },
+    "Tx_Curr_LineList": {
+        "description":"Description of TX Curr Line List",
+        "header_mapping": {
+            "Sex": "",
+            "Weight": "",
+            "Age": "",
+            "FollowUpDate": "",
+            "FollowUpDate_GC": "",
+            "Next_visit_Date": "",
+            "Next_visit_Date_GC": "",
+            "ARVRegimen": "",
+            "RegimensLine": "",
+            "ARTDoseDays": "",
+            "FollowupStatus": "",
+            "ARTDoseEndDate": "",
+            "ARTDoseEndDate_DC": "",
+            "AdheranceLevel": "",
+            "ARTStartDate": "",
+            "ARTStartDate_GC": "",
+            "FP_Status": "",
+            "TB_SreeningStatus": "",
+            "ActiveTBDiagnosed": "",
+            "NutritionalScrenningStatus": "",
+            "SexForNutrition": "",
+            "TherapeuticFoodProvided": "",
+            "PatientGUID": "",
+            "IsPregnant": "",
+            "BreastFeeding": "",
+            "LMP_Date": "",
+            "LMP_Date_GC": "",
+            "MonthsOnART": "",
+            "ChildDisclosueStatus": "",
+            "DSD_Category": ""
+        }
+    },
+    "Tx_Curr_VLTestReceived_LineList":  {
+        "description":"Description of VL Test Received Line List",
+        "header_mapping": {
+            "Sex": "Sex",
+            "Weight": "Weight",
+            "Age": "Age"
+        }
+    },
+    "Tx_Curr_HVL_LineList":  {
+        "description":"Description of HVL Line List",
+        "header_mapping": {
+            "Sex": "Sex",
+            "Weight": "Weight",
+            "Age": "Age"
+        }
+    },
+    "Tx_Curr_VLEligibleNew_LineList":  {
+        "description":"Description of VL Eligibility Line List",
+        "header_mapping": {
+            "Sex": "Sex",
+            "Weight": "Weight",
+            "Age": "Age"
+        }
+    },
+    "Tx_Curr_TPT_LineList":  {
+        "description":"Description of TPT Line List",
+        "header_mapping": {
+            "Sex": "Sex",
+            "Weight": "Weight",
+            "Age": "Age",
+            "TPT_Started_Date": "TPT_Started_Date",
+            "TPT_Completed_Date": "TPT_Completed_Date",
+            "TPT_Type": "TPT_Type",
+            "TPT_TypeAlt": "TPT_TypeAlt",
+            "TPT_TypeChar": "TPT_TypeChar",
+            "HIV_Confirmed_Date": "HIV_Confirmed_Date",
+            "ART_Start_Date": "ART_Start_Date",
+            "FollowUpDate": "FollowUpDate",
+            "Transfer_In": "Transfer_In",
+            "ARTDoseDays": "ARTDoseDays",
+            "Next_visit_Date": "Next_visit_Date",
+            "FollowupStatus": "FollowupStatus",
+            "FollowupStatusChar": "FollowupStatusChar",
+            "ARTDoseEndDate": "ARTDoseEndDate",
+            "PatientGUID": "PatientGUID",
+            "WHOStage": "WHOStage",
+            "AdultCD4Count": "AdultCD4Count",
+            "ChildCD4Count": "ChildCD4Count",
+            "CPT_StartDate": "CPT_StartDate",
+            "CPT_StartDate_GC": "CPT_StartDate_GC",
+            "CPT_StopDate": "CPT_StopDate",
+            "CPT_StopDate_GC": "CPT_StopDate_GC",
+            "TB_SpecimenType": "TB_SpecimenType",
+            "ActiveTBDiagnosed": "ActiveTBDiagnosed",
+            "ActiveTBDignosedDate": "ActiveTBDignosedDate",
+            "ActiveTBDignosedDate_GC": "ActiveTBDignosedDate_GC",
+            "TBTx_StartDate": "TBTx_StartDate",
+            "TBTx_StartDate_GC": "TBTx_StartDate_GC",
+            "TBTx_CompletedDate": "TBTx_CompletedDate",
+            "TBTx_CompletedDate_GC": "TBTx_CompletedDate_GC",
+            "FluconazoleStartDate": "FluconazoleStartDate",
+            "FluconazoleStartDate_GC": "FluconazoleStartDate_GC",
+            "FluconazoleEndDate": "FluconazoleEndDate",
+            "FluconazoleEndDate_GC": "FluconazoleEndDate_GC"
+        }
+    }
+}

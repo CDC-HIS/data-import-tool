@@ -1,8 +1,0 @@
-{
-    "TX_Curr_Line_List": "sql_queries/TX_Curr_Line_List.sql",
-    "DataSheet_VL_Test_Received_Line_List": "sql_queries/DataSheet_VL_Test_Received_Line_List.sql",
-    "AHD_Line_List": "sql_queries/AHD_Line_List.sql",
-    "HVL_Line_List": "sql_queries/HVL_Line_List.sql",
-    "VL_Eligibility_Line_List": "sql_queries/VL_Eligibility_Line_List.sql",
-    "TPT_Line_List": "sql_queries/TPT_Line_List.sql"
-}

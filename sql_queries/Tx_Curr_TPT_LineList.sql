@@ -68,7 +68,7 @@ WITH FollowUp AS (SELECT follow_up.encounter_id,
      tmp_tpt_completed as (select encounter_id,
                                   client_id,
                                   InhprophylaxisCompletedDate                                                                                                          as InhprophylaxisCompletedDate,
-                                  ROW_NUMBER() OVER (PARTITION BY FollowUp.client_id ORDER BY FollowUp.InhprophylaxisCompletedDate DESC , FollowUp.encounter_id DESC ) AS row_num
+                                  ROW_NUMBER() OVER (PARTITION BY Sex, Weight, Age, TPT_Started_Date, TPT_Completed_Date, TPT_Type, TPT_TypeAlt, TPT_TypeChar, HIV_Confirmed_Date, ART_Start_Date, FollowUpDate, Transfer_In, ARTDoseDays, Next_visit_Date, FollowupStatus, FollowupStatusChar, ARTDoseEndDate, PatientGUID, WHOStage, AdultCD4Count, ChildCD4Count, CPT_StartDate, CPT_StartDate_GC, CPT_StopDate, CPT_StopDate_GC, TB_SpecimenType, ActiveTBDiagnosed, ActiveTBDignosedDate, ActiveTBDignosedDate_GC, TBTx_StartDate, TBTx_StartDate_GC, TBTx_CompletedDate, TBTx_CompletedDate_GC, FluconazoleStartDate, FluconazoleStartDate_GC, FluconazoleEndDate, FluconazoleEndDate_GCFollowUp.client_id ORDER BY FollowUp.InhprophylaxisCompletedDate DESC , FollowUp.encounter_id DESC ) AS row_num
                            from FollowUp
                            where InhprophylaxisCompletedDate is not null
                              and followup_date <= REPORT_END_DATE),
@@ -117,27 +117,66 @@ WITH FollowUp AS (SELECT follow_up.encounter_id,
                  FROM FollowUp AS f_case
                           INNER JOIN latest_follow_up ON f_case.encounter_id = latest_follow_up.encounter_id)
 
-select tmp_tpt.gender                            as Sex,
-       tmp_tpt.weight_in_kg as Weight,
-       tmp_tpt.age                               AS Age,
-       tpt_start.inhprophylaxis_started_date     As TPT_Started_Date,
-       tpt_completed.InhprophylaxisCompletedDate As TPT_Completed_Date,
-       tpt_type.TptType,
-       tpt_type.TptTypeAlt,
-       CASE
+select
+
+    tmp_tpt.gender Sex,
+    tmp_tpt.weight_in_kg as Weight,
+    tmp_tpt.age as Age,
+    tpt_start.inhprophylaxis_started_date as  TPT_Started_Date,
+    tpt_completed.InhprophylaxisCompletedDate as TPT_Completed_Date,
+    tpt_type.TptType as  TPT_Type,
+    tpt_type.TptTypeAlt TPT_TypeAlt,
+    CASE
            WHEN tpt_type.TptType = '6H' THEN 'INH'
            WHEN tpt_type.TptType = '3HP' THEN '3HP'
            ELSE '' END                           AS TPT_TypeChar,
+    tmp_tpt.hiv_confirmed_date as HIV_Confirmed_Date,
+    tmp_tpt.art_start_date as ART_Start_Date,
+    tmp_tpt.followup_date as FollowUpDate,
+    Transfer_In,
+    tmp_tpt.artdosecode as ARTDoseDays,
+    tmp_tpt.next_visit_date as Next_visit_Date,
+    tmp_tpt.follow_up_status as FollowupStatus,
+    tmp_tpt.follow_up_status as FollowupStatusChar,
+    tmp_tpt.art_end_date as ARTDoseEndDate,
+    tmp_tpt.PatientGUID as PatientGUID,
+    tmp_tpt.WHOStage as WHOStage,
+    AdultCD4Count,
+    ChildCD4Count,
+    CPT_StartDate,
+    CPT_StartDate_GC,
+    CPT_StopDate,
+    CPT_StopDate_GC,
+    TB_SpecimenType,
+    ActiveTBDiagnosed,
+    ActiveTBDignosedDate,
+    ActiveTBDignosedDate_GC,
+    TBTx_StartDate,
+    TBTx_StartDate_GC,
+    TBTx_CompletedDate,
+    TBTx_CompletedDate_GC,
+    FluconazoleStartDate,
+    FluconazoleStartDate_GC,
+    FluconazoleEndDate,
+    FluconazoleEndDate_GC
 
-       tmp_tpt.hiv_confirmed_date as date_hiv_confirmed,
-       tmp_tpt.art_start_date,
-       tmp_tpt.followup_date as FollowUpDate,
-#        #temp3.transferin                                                                    As Transfer_In,
-       tmp_tpt.artdosecode                       As ARTDoseDays,
-       tmp_tpt.next_visit_date,
-       tmp_tpt.follow_up_status,
-       tmp_tpt.statuscode                        As FollowupStatusChar,
-       tmp_tpt.art_end_date                      As ARTDoseEndDate,
+
+FROM FollowUp
+         inner join tmp_tpt on tmp_tpt.encounter_id = FollowUp.encounter_id
+         Left join tpt_start on tmp_tpt.client_id = tpt_start.client_id
+         Left join tpt_completed on tmp_tpt.client_id = tpt_completed.client_id
+         Left join tpt_type on tmp_tpt.client_id = tpt_type.client_id
+where tmp_tpt.art_end_date >= REPORT_END_DATE
+  AND tmp_tpt.follow_up_status in ('Alive', 'Restart medication')
+  AND tmp_tpt.art_start_date <= REPORT_END_DATE;
+
+
+
+
+
+
+
+
        tmp_tpt.PatientGUID,
        tmp_tpt.WHOStage,
        tmp_tpt.AdultCD4Count,
@@ -158,11 +197,3 @@ select tmp_tpt.gender                            as Sex,
        FollowUp.fluconazole_start_date           As FluconazoleStartDate_GC,
        FollowUp.Fluconazole_End_Date             As FluconazoleEndDate,
        FollowUp.Fluconazole_End_Date             As FluconazoleEndDate_GC
-FROM FollowUp
-         inner join tmp_tpt on tmp_tpt.encounter_id = FollowUp.encounter_id
-         Left join tpt_start on tmp_tpt.client_id = tpt_start.client_id
-         Left join tpt_completed on tmp_tpt.client_id = tpt_completed.client_id
-         Left join tpt_type on tmp_tpt.client_id = tpt_type.client_id
-where tmp_tpt.art_end_date >= REPORT_END_DATE
-  AND tmp_tpt.follow_up_status in ('Alive', 'Restart medication')
-  AND tmp_tpt.art_start_date <= REPORT_END_DATE;
