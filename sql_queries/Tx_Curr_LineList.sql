@@ -2,22 +2,20 @@ WITH FollowUp AS (select follow_up.encounter_id,
                          follow_up.client_id                 AS PatientId,
                          follow_up_status,
                          follow_up_date_followup_            AS follow_up_date,
-                         art_antiretroviral_start_date       AS art_start_date,
+                         follow_up_2.art_antiretroviral_start_date       AS art_start_date,
                          assessment_date,
                          treatment_end_date,
                          antiretroviral_art_dispensed_dose_i AS ARTDoseDays,
-                         CASE
-                             WHEN sex = 'FEMALE' THEN 'F'
-                             WHEN sex = 'MALE' THEN 'M' END  AS sex,
-                         current_age                         AS Age,
+                         gender  AS sex,
+                         age                         AS Age,
                          weight_text_                        AS Weight,
                          screening_test_result_tuberculosis  AS TB_SreeningStatus,
                          date_of_last_menstrual_period_lmp_     LMP_Date,
                          anitiretroviral_adherence_level     AS AdherenceLevel,
                          next_visit_date,
-                         regimen,
+                         follow_up.regimen,
                          currently_breastfeeding_child          breast_feeding_status,
-                         pregnancy_status,
+                         follow_up_1.pregnancy_status,
                          person.uuid,
                          diagnosis_date                      AS ActiveTBDiagnoseddate,
                          nutritional_status_of_adult,
@@ -27,7 +25,9 @@ WITH FollowUp AS (select follow_up.encounter_id,
                          method_of_family_planning,
                          patient_diagnosed_with_active_tuber as ActiveTBDiagnosed,
                          dsd_category,
-                         nutritional_screening_result
+                         nutritional_screening_result,
+                         inh_start_date,
+                         inh_date_completed
                   FROM mamba_flat_encounter_follow_up follow_up
                            JOIN mamba_flat_encounter_follow_up_1 follow_up_1
                                 ON follow_up.encounter_id = follow_up_1.encounter_id
@@ -35,10 +35,9 @@ WITH FollowUp AS (select follow_up.encounter_id,
                                 ON follow_up.encounter_id = follow_up_2.encounter_id
                            JOIN mamba_flat_encounter_follow_up_3 follow_up_3
                                 ON follow_up.encounter_id = follow_up_3.encounter_id
-                           JOIN mamba_dim_client_art_follow_up dim_client ON follow_up.client_id = dim_client.client_id
                            JOIN mamba_dim_person person on person.person_id = follow_up.client_id
-                           left join analysis_db.mamba_flat_encounter_intake_a mfeia
-                                     on dim_client.client_id = mfeia.client_id),
+                           left join analysis_db.mamba_flat_encounter_intake_b intake_b
+                                     on follow_up.client_id = intake_b.client_id),
      -- TX curr
      tx_curr_all AS (SELECT PatientId,
                             follow_up_date                                                                             AS FollowupDate,
@@ -79,10 +78,10 @@ select sex                                                                   as 
        AdherenceLevel                                                        as AdheranceLevel,
        fn_gregorian_to_ethiopian_calendar(art_start_date, 'Y-M-D')           as ARTStartDate,
        art_start_date                                                        as ARTStartDate_GC,
-       fn_gregorian_to_ethiopian_calendar(, 'Y-M-D')                         as INH_Start_Date,
-       INH_Start_Date_GC,
-       fn_gregorian_to_ethiopian_calendar(, 'Y-M-D')                         as INH_Completed_Date,
-       INH_Completed_Date_GC,
+       fn_gregorian_to_ethiopian_calendar(inh_start_date, 'Y-M-D')                         as INH_Start_Date,
+       inh_start_date as INH_Start_Date_GC,
+       fn_gregorian_to_ethiopian_calendar(inh_date_completed, 'Y-M-D')                         as INH_Completed_Date,
+       inh_date_completed as INH_Completed_Date_GC,
        CASE
            WHEN method_of_family_planning = 'Intrauterine device' OR
                 method_of_family_planning = 'Vasectomy'

@@ -68,7 +68,7 @@ WITH FollowUp AS (SELECT follow_up.encounter_id,
      tmp_tpt_completed as (select encounter_id,
                                   client_id,
                                   InhprophylaxisCompletedDate                                                                                                          as InhprophylaxisCompletedDate,
-                                  ROW_NUMBER() OVER (PARTITION BY Sex, Weight, Age, TPT_Started_Date, TPT_Completed_Date, TPT_Type, TPT_TypeAlt, TPT_TypeChar, HIV_Confirmed_Date, ART_Start_Date, FollowUpDate, Transfer_In, ARTDoseDays, Next_visit_Date, FollowupStatus, FollowupStatusChar, ARTDoseEndDate, PatientGUID, WHOStage, AdultCD4Count, ChildCD4Count, CPT_StartDate, CPT_StartDate_GC, CPT_StopDate, CPT_StopDate_GC, TB_SpecimenType, ActiveTBDiagnosed, ActiveTBDignosedDate, ActiveTBDignosedDate_GC, TBTx_StartDate, TBTx_StartDate_GC, TBTx_CompletedDate, TBTx_CompletedDate_GC, FluconazoleStartDate, FluconazoleStartDate_GC, FluconazoleEndDate, FluconazoleEndDate_GCFollowUp.client_id ORDER BY FollowUp.InhprophylaxisCompletedDate DESC , FollowUp.encounter_id DESC ) AS row_num
+                                  ROW_NUMBER() OVER (PARTITION BY FollowUp.client_id ORDER BY FollowUp.InhprophylaxisCompletedDate DESC , FollowUp.encounter_id DESC ) AS row_num
                            from FollowUp
                            where InhprophylaxisCompletedDate is not null
                              and followup_date <= REPORT_END_DATE),
@@ -118,7 +118,6 @@ WITH FollowUp AS (SELECT follow_up.encounter_id,
                           INNER JOIN latest_follow_up ON f_case.encounter_id = latest_follow_up.encounter_id)
 
 select
-
     tmp_tpt.gender Sex,
     tmp_tpt.weight_in_kg as Weight,
     tmp_tpt.age as Age,
@@ -143,23 +142,22 @@ select
     tmp_tpt.WHOStage as WHOStage,
     AdultCD4Count,
     ChildCD4Count,
-    CPT_StartDate,
+    fn_gregorian_to_ethiopian_calendar(CPT_StartDate, 'Y-M-D') as  CPT_StartDate,
     CPT_StartDate_GC,
-    CPT_StopDate,
+    fn_gregorian_to_ethiopian_calendar(CPT_StopDate, 'Y-M-D') as  CPT_StopDate,
     CPT_StopDate_GC,
     TB_SpecimenType,
     ActiveTBDiagnosed,
-    ActiveTBDignosedDate,
+    fn_gregorian_to_ethiopian_calendar(ActiveTBDignosedDate, 'Y-M-D')  as ActiveTBDignosedDate,
     ActiveTBDignosedDate_GC,
-    TBTx_StartDate,
+    fn_gregorian_to_ethiopian_calendar(TBTx_StartDate, 'Y-M-D')  as TBTx_StartDate,
     TBTx_StartDate_GC,
-    TBTx_CompletedDate,
+    fn_gregorian_to_ethiopian_calendar(TBTx_CompletedDate, 'Y-M-D') as  TBTx_CompletedDate,
     TBTx_CompletedDate_GC,
-    FluconazoleStartDate,
-    FluconazoleStartDate_GC,
-    FluconazoleEndDate,
-    FluconazoleEndDate_GC
-
+    fn_gregorian_to_ethiopian_calendar(Fluconazole_Start_Date, 'Y-M-D')  as  FluconazoleStartDate,
+    Fluconazole_Start_Date as FluconazoleStartDate_GC,
+    fn_gregorian_to_ethiopian_calendar(Fluconazole_End_Date, 'Y-M-D')  as FluconazoleEndDate,
+    Fluconazole_End_Date as FluconazoleEndDate_GC
 
 FROM FollowUp
          inner join tmp_tpt on tmp_tpt.encounter_id = FollowUp.encounter_id
@@ -173,27 +171,3 @@ where tmp_tpt.art_end_date >= REPORT_END_DATE
 
 
 
-
-
-
-
-       tmp_tpt.PatientGUID,
-       tmp_tpt.WHOStage,
-       tmp_tpt.AdultCD4Count,
-       tmp_tpt.ChildCD4Count,
-       tmp_tpt.CPT_StartDate,
-       tmp_tpt.CPT_StartDate_GC,
-       tmp_tpt.CPT_StopDate,
-       tmp_tpt.CPT_StopDate_GC,
-       tmp_tpt.TB_SpecimenType,
-       tmp_tpt.ActiveTBDiagnosed,
-       tmp_tpt.ActiveTBDignosedDate,
-       tmp_tpt.ActiveTBDignosedDate_GC,
-       tmp_tpt.TBTx_StartDate,
-       tmp_tpt.TBTx_StartDate_GC,
-       tmp_tpt.TBTx_CompletedDate,
-       tmp_tpt.TBTx_CompletedDate_GC,
-       FollowUp.fluconazole_start_date           As FluconazoleStartDate,
-       FollowUp.fluconazole_start_date           As FluconazoleStartDate_GC,
-       FollowUp.Fluconazole_End_Date             As FluconazoleEndDate,
-       FollowUp.Fluconazole_End_Date             As FluconazoleEndDate_GC

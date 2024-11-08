@@ -128,4 +128,6 @@
                 mssql = "INSERT INTO Tx_Curr_AHD_LineList (Region,Woreda, Facility, HMISCode, ReportYear, ReportMonth, Sex, Weight, Age, PatientGUID, Height, HIV_Confirmed_Date, ARTStartDate, MonthsOnART, FollowUpDate, WHOStage, CD4Count, ARTDoseDays, ARVRegimen, FollowupStatus, AdheranceLevel, IsPregnant, FpMethodUsed, CrAg, NutritionalStatus, FunctionalStatus, No_OI, Zoster, Bacterial_Pneumonia, Extra_Pulmonary_TB, Oesophageal_Candidiasis, Vaginal_Candidiasis, Mouth_Ulcer, Chronic_Diarrhea, Acute_Diarrhea, CNS_Toxoplasmosis, Cryptococcal_Meningitis, Kaposi_Sarcoma, Cervical_Cancer, Pulmonary_TB, Oral_Candidiasis, Pneumocystis_Pneumonia, NonHodgkins_Lymphoma, Genital_Ulcer, OI_Other, Med1, Med2, CotrimoxazoleStartDate, cortimoxazole_stop_date, Fluconazole_Start_Date, Fluconazole_End_Date, TPT_Type, inhprophylaxis_started_date, InhprophylaxisCompletedDate, " & _
                         "TPT_DoseDaysNumberALT, TPT_DoseDaysNumberINH, TPT_Dispensed_Dose, TPT_SideEffect, TPT_Adherence, tb_screened, tb_screening_result, TB_Diagnostic_Result, LF_LAM_result, Gene_Xpert_result, Smear_Microscopy_Result, Additional_TB_Diagnostic_Test_Result, Active_TB, ActiveTBTreatmentStartDate, ActiveTBTreatmentCompletedDate, ActiveTBTreatmentDiscontinuedDate, Viral_Load_Perform_Date, Viral_Load_Status, Viral_Load_count, VL_Sent_Date, Viral_Load_Ref_Date, CCA_Screened, DSD_Category, AHD) " & _
                         "VALUES ('');"
-             
+
+
+

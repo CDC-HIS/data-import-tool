@@ -48,7 +48,7 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                                 ON follow_up.encounter_id = follow_up_2.encounter_id
                            JOIN mamba_flat_encounter_follow_up_3 follow_up_3
                                 ON follow_up.encounter_id = follow_up_3.encounter_id
-                      JOIN mamba_flat_encounter_follow_up_4 follow_up_4
+                           JOIN mamba_flat_encounter_follow_up_4 follow_up_4
                                 ON follow_up.encounter_id = follow_up_4.encounter_id
                            JOIN mamba_dim_client_art_follow_up dim_client
                                 ON follow_up.client_id = dim_client.client_id
@@ -198,7 +198,7 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                                    WHEN vlperfdate.viral_load_perform_date IS NOT NULL
                                        THEN vlperfdate.viral_load_perform_date
                                    ELSE NULL END                             AS viral_load_ref_date,
-                               sub_switch_date.FollowupDate as switchDate,
+                               sub_switch_date.FollowupDate                  as switchDate,
                                vlperfdate.viral_load_status_inferred,
 
                                vlperfdate.routine_viral_load_test_indication as viral_load_indication,
@@ -355,12 +355,29 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                                  Left join all_art_follow_ups on f_case.client_id = all_art_follow_ups.client_id
 
                         where all_art_follow_ups.follow_up_status in ('Alive', 'Restart Medication'))
-select case
-
-           when t.vl_status_final = 'N/A' THEN 'Not Applicable'
-           when t.eligiblityDate <= REPORT_END_DATE THEN 'Eligible for Viral Load'
-           when t.eligiblityDate > REPORT_END_DATE THEN 'Viral Load Done'
-           when t.art_start_date is NULL and t.follow_up_status is null THEN 'Not Started ART'
-           end as viral_load_status_compare,
-       t.*
+select Sex,
+       Weight,
+       current_age                  as Age,
+       date_hiv_confirmed,
+       art_start_date,
+       FollowUpDate,
+       IsPregnant,
+       regimen                      as ARVDispendsedDose,
+       FollowUp.arv_dispensed_dose  as ARTDoseDays,
+       next_visit_date,
+       follow_up_status,
+       treatment_end_date           as art_dose_End,
+       viral_load_perform_date,
+       viral_load_status,
+       viral_load_count,
+       viral_load_sent_date,
+       viral_load_ref_date,
+       date_regimen_change,
+       eligiblityDate,
+       PatientGUID,
+       vl_eligibility.BreastFeeding as IsBreastfeeding,
+       CASE
+           WHEN IsPregnant = 'Yes' THEN 'Yes'
+           WHEN BreastFeeding = 'Yes' THEN 'Yes'
+           ELSE 'No' END            AS PMCT_ART
 from vl_eligibility t;
