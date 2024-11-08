@@ -234,7 +234,7 @@ select
     viral_load_perform_date,
     viral_load_status,
     viral_load_count,
-    tmp_vl_sent_date.VL_Sent_Date as viral_load_sent_date,
+    hvl.VL_Sent_Date as viral_load_sent_date,
     viral_load_ref_date,
     routine_viral_load,
     target,

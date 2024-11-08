@@ -363,7 +363,7 @@ select Sex,
        FollowUpDate,
        IsPregnant,
        regimen                      as ARVDispendsedDose,
-       FollowUp.arv_dispensed_dose  as ARTDoseDays,
+       t.arv_dispensed_dose  as ARTDoseDays,
        next_visit_date,
        follow_up_status,
        treatment_end_date           as art_dose_End,
@@ -375,7 +375,7 @@ select Sex,
        date_regimen_change,
        eligiblityDate,
        PatientGUID,
-       vl_eligibility.BreastFeeding as IsBreastfeeding,
+       t.BreastFeeding as IsBreastfeeding,
        CASE
            WHEN IsPregnant = 'Yes' THEN 'Yes'
            WHEN BreastFeeding = 'Yes' THEN 'Yes'
