@@ -9,6 +9,8 @@ import shutil
 import hashlib
 import zipfile
 
+from IPython.utils.coloransi import value
+
 # Database connection parameters
 DRIVER = "ODBC Driver 17 for SQL Server"
 DB_HOST = "localhost"
@@ -130,7 +132,8 @@ def read_csv_files_based_on_config(directory, config):
                 "month": month,
                 "year": year,
                 "data": data,
-                "header_mapping": config[report_name].get("header_mapping", {})
+                "header_mapping": config[report_name].get("header_mapping", {}),
+                "field_value_mapping": config[report_name].get("field_value_mapping", {})
                 # Map CSV headers to DB columns
             }
         else:
@@ -151,6 +154,7 @@ def generate_insert_query(table_name, header_mapping):
 def process_data_and_insert(cursor, report_data,report):
     table_name = report
     header_mapping = report_data.get("header_mapping", {})
+    field_value_mapping = report_data.get("field_value_mapping", {})
     data = report_data["data"]
     year = report_data["year"]
     month = report_data["month"]
@@ -162,8 +166,15 @@ def process_data_and_insert(cursor, report_data,report):
                   enumerate(data[0])}
         values["ReportYear"] = year
         values["ReportMonth"] = month
-        
+        for field, mappings in field_value_mapping.items():
+            if field in values:
+                original_value = values[field]
+                # Check if the original value has a replacement in mappings
+                if original_value in mappings:
+                    values[field] = mappings[original_value]  # Replace value
         insert_query = generate_insert_query(table_name, header_mapping)
+        print(insert_query)
+        print(values)
         cursor.execute(insert_query, values)
         
 def move_imported_file(file_pattern):
@@ -186,41 +197,74 @@ def move_imported_file(file_pattern):
     
 # Usage
 verify_and_extract_zip_files('output_csv')
-
 # Main execution block
-with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
-    cursor = conn.cursor()
-    
-    # Load configuration
-    config_path = "import_config.json"
-    config = load_config(config_path)
-    
-    # Specify the directory containing CSV files
-    directory = "output_csv"
-    
-    # Read CSV files based on the config
-    csv_data = read_csv_files_based_on_config(directory, config)
-    
-    if csv_data:
-        for report, content in csv_data.items():
-            logging.info(
-            f"\nData for {report} ({content['description']}, Month: {content['month']}, Year: {content['year']}):")
-            HMIS_CODE = content['data'][2][-1]
-            delete_existing = """
-                DELETE FROM  {}  WHERE HMISCode = '{}' AND ReportYear = '{}' AND ReportMonth = '{}'
-                """.format(report,HMIS_CODE, content['year'], content['month'])
-            cursor.execute(delete_existing)
-            # Process data and insert dynamically
-            process_data_and_insert(cursor, content,report)
-            
-            file_pattern = os.path.join('output_csv',
-                                        f"*{content['data'][2][-2]}{content['data'][2][-1]}_{content['month']}_{content['year']}.csv")
-            move_imported_file(file_pattern)
-            sp_query = f"""
-            EXEC SP_AggregateHivindicators '{content['data'][2][-4]}', '{content['data'][2][-3]}', '{content['data'][2][-2]}', '{content['data'][2][-1]}', '{content['year']}', '{content['month']}'
-            """
-            cursor.execute(sp_query)
-    # Commit the transaction
-    conn.commit()
-    cursor.close()
+try:
+    with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
+        cursor = conn.cursor()
+        
+        # Load configuration
+        config_path = "import_config.json"
+        config = load_config(config_path)
+        
+        # Specify the directory containing CSV files
+        directory = "output_csv"
+        
+        # Read CSV files based on the config
+        csv_data = read_csv_files_based_on_config(directory, config)
+        
+        if csv_data:
+            for report, content in csv_data.items():
+                logging.info(f"Processing data for {report} ({content['description']}), "
+                             f"Month: {content['month']}, Year: {content['year']}")
+                
+                HMIS_CODE = content['data'][2][-1]  # Handle carefully, check row structure
+                
+                # Check for existing data to delete
+                delete_existing = f"""
+                    DELETE FROM {report}
+                    WHERE HMISCode = '{HMIS_CODE}' AND ReportYear = '{content['year']}' AND ReportMonth = '{content['month']}'
+                """
+                try:
+                    cursor.execute(delete_existing)
+                    logging.info(
+                        f"Deleted existing records for {report} with HMISCode {HMIS_CODE}, "
+                        f"Year {content['year']}, Month {content['month']}")
+                except Exception as e:
+                    logging.error(f"Error executing delete query for {report}: {e}")
+                    continue  # Skip to the next report if delete fails
+                
+                # Process data and insert dynamically
+                try:
+                    process_data_and_insert(cursor, content, report)
+                except Exception as e:
+                    logging.error(f"Error inserting data for {report}: {e}")
+                    conn.rollback()
+                    continue  # Skip to the next report if insert fails
+                
+                # Move processed file
+                file_pattern = os.path.join('output_csv',
+                                            f"*{content['data'][2][-2]}{content['data'][2][-1]}_{content['month']}_{content['year']}.csv")
+                move_imported_file(file_pattern)
+                
+                # Execute stored procedure
+                try:
+                    sp_query = f"""
+                        EXEC SP_AggregateHivindicators '{content['data'][2][-4]}', '{content['data'][2][-3]}',
+                        '{content['data'][2][-2]}', '{content['data'][2][-1]}', '{content['year']}', '{content['month']}'
+                    """
+                    cursor.execute(sp_query)
+                    logging.info(f"Executed stored procedure for {report}")
+                except Exception as e:
+                    logging.error(f"Error executing stored procedure for {report}: {e}")
+                    conn.rollback()
+                    continue
+        
+        # Commit the transaction
+        conn.commit()
+
+except Exception as e:
+    logging.error(f"Critical error in main execution block: {e}")
+finally:
+    if cursor:
+        cursor.close()
     

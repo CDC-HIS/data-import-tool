@@ -73,42 +73,66 @@
             "Viral_Load_Ref_Date": "Viral_Load_Ref_Date",
             "CCA_Screened": "CCA_Screened",
             "DSD_Category": "DSD_Category",
-            "AHD": "AHD"
+            "AHD": "AHD",
+            "Region": "Region",
+            "Woreda": "Woreda",
+            "Facility": "Facility",
+            "HMISCode": "HMISCode",
+            "ReportYear": "ReportYear",
+            "ReportMonth": "ReportMonth"
+        },
+        "field_value_mapping": {
+           "Sex": {
+                 "FEMALE": "F",
+                 "MALE": "M"
+            }
         }
     },
     "Tx_Curr_LineList": {
         "description":"Description of TX Curr Line List",
         "header_mapping": {
-            "Sex": "",
-            "Weight": "",
-            "Age": "",
-            "FollowUpDate": "",
-            "FollowUpDate_GC": "",
-            "Next_visit_Date": "",
-            "Next_visit_Date_GC": "",
-            "ARVRegimen": "",
-            "RegimensLine": "",
-            "ARTDoseDays": "",
-            "FollowupStatus": "",
-            "ARTDoseEndDate": "",
-            "ARTDoseEndDate_DC": "",
-            "AdheranceLevel": "",
-            "ARTStartDate": "",
-            "ARTStartDate_GC": "",
-            "FP_Status": "",
-            "TB_SreeningStatus": "",
-            "ActiveTBDiagnosed": "",
-            "NutritionalScrenningStatus": "",
-            "SexForNutrition": "",
-            "TherapeuticFoodProvided": "",
-            "PatientGUID": "",
-            "IsPregnant": "",
-            "BreastFeeding": "",
-            "LMP_Date": "",
-            "LMP_Date_GC": "",
-            "MonthsOnART": "",
-            "ChildDisclosueStatus": "",
-            "DSD_Category": ""
+            "Sex": "Sex",
+            "Weight": "Weight",
+            "Age": "Age",
+            "FollowUpDate": "FollowUpDate",
+            "FollowUpDate_GC": "FollowUpDate_GC",
+            "Next_visit_Date": "Next_visit_Date",
+            "Next_visit_Date_GC": "Next_visit_Date_GC",
+            "ARVRegimen": "ARVRegimen",
+            "RegimensLine": "RegimensLine",
+            "ARTDoseDays": "ARTDoseDays",
+            "FollowupStatus": "FollowupStatus",
+            "ARTDoseEndDate": "ARTDoseEndDate",
+            "ARTDoseEndDate_DC": "ARTDoseEndDate_DC",
+            "AdheranceLevel": "AdheranceLevel",
+            "ARTStartDate": "ARTStartDate",
+            "ARTStartDate_GC": "ARTStartDate_GC",
+            "FP_Status": "FP_Status",
+            "TB_SreeningStatus": "TB_SreeningStatus",
+            "ActiveTBDiagnosed": "ActiveTBDiagnosed",
+            "NutritionalScrenningStatus": "NutritionalScrenningStatus",
+            "SexForNutrition": "SexForNutrition",
+            "TherapeuticFoodProvided": "TherapeuticFoodProvided",
+            "PatientGUID": "PatientGUID",
+            "IsPregnant": "IsPregnant",
+            "BreastFeeding": "BreastFeeding",
+            "LMP_Date": "LMP_Date",
+            "LMP_Date_GC": "LMP_Date_GC",
+            "MonthsOnART": "MonthsOnART",
+            "ChildDisclosueStatus": "ChildDisclosueStatus",
+            "DSD_Category": "DSD_Category",
+            "Region": "Region",
+            "Woreda": "Woreda",
+            "Facility": "Facility",
+            "HMISCode": "HMISCode",
+            "ReportYear": "ReportYear",
+            "ReportMonth": "ReportMonth"
+        },
+        "field_value_mapping": {
+             "Sex": {
+                 "FEMALE": "F",
+                 "MALE": "M"
+            }
         }
     },
     "Tx_Curr_VLTestReceived_LineList":  {
@@ -134,7 +158,19 @@
             "viral_load_ref_date": "viral_load_ref_date",
             "ReasonForVLTest": "ReasonForVLTest",
             "PMTCT_ART": "PMTCT_ART",
-            "PatientGUID": "PatientGUID"
+            "PatientGUID": "PatientGUID",
+            "Region": "Region",
+            "Woreda": "Woreda",
+            "Facility": "Facility",
+            "HMISCode": "HMISCode",
+            "ReportYear": "ReportYear",
+            "ReportMonth": "ReportMonth"
+        },
+        "field_value_mapping": {
+             "Sex": {
+                 "FEMALE": "F",
+                 "MALE": "M"
+            }
         }
     },
     "Tx_Curr_HVL_LineList":  {
@@ -172,14 +208,26 @@
             "viral_load_count_cf": "viral_load_count_cf",
             "routine_viral_load_cf": "routine_viral_load_cf",
             "target_cf": "target_cf",
-            "PatientGUID": "PatientGUID"
+            "PatientGUID": "PatientGUID",
+            "Region": "Region",
+            "Woreda": "Woreda",
+            "Facility": "Facility",
+            "HMISCode": "HMISCode",
+            "ReportYear": "ReportYear",
+            "ReportMonth": "ReportMonth"
+        },
+        "field_value_mapping": {
+           "Sex": {
+                 "FEMALE": "F",
+                 "MALE": "M"
+            }
         }
     },
     "Tx_Curr_VLEligibleNew_LineList":  {
         "description":"Description of VL Eligibility Line List",
         "header_mapping": {
             "Sex": "Sex",
-            "Weight": "Weight",
+            "weight": "Weight",
             "Age": "Age",
             "date_hiv_confirmed": "date_hiv_confirmed",
             "art_start_date": "art_start_date",
@@ -199,7 +247,19 @@
             "eligiblityDate": "eligiblityDate",
             "PatientGUID": "PatientGUID",
             "IsBreastfeeding": "IsBreastfeeding",
-            "PMTCT_ART": "PMTCT_ART"
+            "PMTCT_ART": "PMTCT_ART",
+            "Region": "Region",
+            "Woreda": "Woreda",
+            "Facility": "Facility",
+            "HMISCode": "HMISCode",
+            "ReportYear": "ReportYear",
+            "ReportMonth": "ReportMonth"
+        },
+        "field_value_mapping": {
+            "Sex": {
+                 "FEMALE": "F",
+                 "MALE": "M"
+            }
         }
     },
     "Tx_Curr_TPT_LineList":  {
@@ -216,7 +276,7 @@
             "HIV_Confirmed_Date": "HIV_Confirmed_Date",
             "ART_Start_Date": "ART_Start_Date",
             "FollowUpDate": "FollowUpDate",
-            "Transfer_In": "Transfer_In",
+            "Transfer_In": "transfer_in",
             "ARTDoseDays": "ARTDoseDays",
             "Next_visit_Date": "Next_visit_Date",
             "FollowupStatus": "FollowupStatus",
@@ -241,7 +301,19 @@
             "FluconazoleStartDate": "FluconazoleStartDate",
             "FluconazoleStartDate_GC": "FluconazoleStartDate_GC",
             "FluconazoleEndDate": "FluconazoleEndDate",
-            "FluconazoleEndDate_GC": "FluconazoleEndDate_GC"
+            "FluconazoleEndDate_GC": "FluconazoleEndDate_GC",
+            "Region": "Region",
+            "Woreda": "Woreda",
+            "Facility": "Facility",
+            "HMISCode": "HMISCode",
+            "ReportYear": "ReportYear",
+            "ReportMonth": "ReportMonth"
+        },
+        "field_value_mapping": {
+            "Sex": {
+                 "FEMALE": "F",
+                 "MALE": "M"
+            }
         }
     }
 }

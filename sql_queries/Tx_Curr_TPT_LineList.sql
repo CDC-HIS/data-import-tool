@@ -117,47 +117,54 @@ WITH FollowUp AS (SELECT follow_up.encounter_id,
                  FROM FollowUp AS f_case
                           INNER JOIN latest_follow_up ON f_case.encounter_id = latest_follow_up.encounter_id)
 
-select
-    tmp_tpt.gender Sex,
-    tmp_tpt.weight_in_kg as Weight,
-    tmp_tpt.age as Age,
-    tpt_start.inhprophylaxis_started_date as  TPT_Started_Date,
-    tpt_completed.InhprophylaxisCompletedDate as TPT_Completed_Date,
-    tpt_type.TptType as  TPT_Type,
-    tpt_type.TptTypeAlt TPT_TypeAlt,
-    CASE
+select tmp_tpt.gender                                                         Sex,
+       tmp_tpt.weight_in_kg                                                as Weight,
+       tmp_tpt.age                                                         as Age,
+       tpt_start.inhprophylaxis_started_date                               as TPT_Started_Date,
+       tpt_completed.InhprophylaxisCompletedDate                           as TPT_Completed_Date,
+       tpt_type.TptType                                                    as TPT_Type,
+       tpt_type.TptTypeAlt                                                    TPT_TypeAlt,
+       CASE
            WHEN tpt_type.TptType = '6H' THEN 'INH'
            WHEN tpt_type.TptType = '3HP' THEN '3HP'
-           ELSE '' END                           AS TPT_TypeChar,
-    tmp_tpt.hiv_confirmed_date as HIV_Confirmed_Date,
-    tmp_tpt.art_start_date as ART_Start_Date,
-    tmp_tpt.followup_date as FollowUpDate,
-    Transfer_In,
-    tmp_tpt.artdosecode as ARTDoseDays,
-    tmp_tpt.next_visit_date as Next_visit_Date,
-    tmp_tpt.follow_up_status as FollowupStatus,
-    tmp_tpt.follow_up_status as FollowupStatusChar,
-    tmp_tpt.art_end_date as ARTDoseEndDate,
-    tmp_tpt.PatientGUID as PatientGUID,
-    tmp_tpt.WHOStage as WHOStage,
-    AdultCD4Count,
-    ChildCD4Count,
-    fn_gregorian_to_ethiopian_calendar(CPT_StartDate, 'Y-M-D') as  CPT_StartDate,
-    CPT_StartDate_GC,
-    fn_gregorian_to_ethiopian_calendar(CPT_StopDate, 'Y-M-D') as  CPT_StopDate,
-    CPT_StopDate_GC,
-    TB_SpecimenType,
-    ActiveTBDiagnosed,
-    fn_gregorian_to_ethiopian_calendar(ActiveTBDignosedDate, 'Y-M-D')  as ActiveTBDignosedDate,
-    ActiveTBDignosedDate_GC,
-    fn_gregorian_to_ethiopian_calendar(TBTx_StartDate, 'Y-M-D')  as TBTx_StartDate,
-    TBTx_StartDate_GC,
-    fn_gregorian_to_ethiopian_calendar(TBTx_CompletedDate, 'Y-M-D') as  TBTx_CompletedDate,
-    TBTx_CompletedDate_GC,
-    fn_gregorian_to_ethiopian_calendar(Fluconazole_Start_Date, 'Y-M-D')  as  FluconazoleStartDate,
-    Fluconazole_Start_Date as FluconazoleStartDate_GC,
-    fn_gregorian_to_ethiopian_calendar(Fluconazole_End_Date, 'Y-M-D')  as FluconazoleEndDate,
-    Fluconazole_End_Date as FluconazoleEndDate_GC
+           ELSE '' END                                                     AS TPT_TypeChar,
+       tmp_tpt.hiv_confirmed_date                                          as HIV_Confirmed_Date,
+       tmp_tpt.art_start_date                                              as ART_Start_Date,
+       tmp_tpt.followup_date                                               as FollowUpDate,
+       Transfer_In,
+       tmp_tpt.artdosecode                                                 as ARTDoseDays,
+       tmp_tpt.next_visit_date                                             as Next_visit_Date,
+       CASE
+           WHEN tmp_tpt.follow_up_status = 'Transferred out' THEN 0
+           WHEN tmp_tpt.follow_up_status = 'Stop all' THEN 1
+           WHEN tmp_tpt.follow_up_status = 'Loss to follow-up (LTFU)' THEN 2
+           WHEN tmp_tpt.follow_up_status = 'Ran away' THEN 3
+           WHEN tmp_tpt.follow_up_status = 'Dead' THEN 4
+           WHEN tmp_tpt.follow_up_status = 'Alive' THEN 5
+           WHEN tmp_tpt.follow_up_status = 'Restart medication' THEN 6 END
+                                                                           as FollowupStatus,
+       tmp_tpt.follow_up_status                                            as FollowupStatusChar,
+       tmp_tpt.art_end_date                                                as ARTDoseEndDate,
+       tmp_tpt.PatientGUID                                                 as PatientGUID,
+       tmp_tpt.WHOStage                                                    as WHOStage,
+       AdultCD4Count,
+       ChildCD4Count,
+       fn_gregorian_to_ethiopian_calendar(CPT_StartDate, 'Y-M-D')          as CPT_StartDate,
+       CPT_StartDate_GC,
+       fn_gregorian_to_ethiopian_calendar(CPT_StopDate, 'Y-M-D')           as CPT_StopDate,
+       CPT_StopDate_GC,
+       TB_SpecimenType,
+       ActiveTBDiagnosed,
+       fn_gregorian_to_ethiopian_calendar(ActiveTBDignosedDate, 'Y-M-D')   as ActiveTBDignosedDate,
+       ActiveTBDignosedDate_GC,
+       fn_gregorian_to_ethiopian_calendar(TBTx_StartDate, 'Y-M-D')         as TBTx_StartDate,
+       TBTx_StartDate_GC,
+       fn_gregorian_to_ethiopian_calendar(TBTx_CompletedDate, 'Y-M-D')     as TBTx_CompletedDate,
+       TBTx_CompletedDate_GC,
+       fn_gregorian_to_ethiopian_calendar(Fluconazole_Start_Date, 'Y-M-D') as FluconazoleStartDate,
+       Fluconazole_Start_Date                                              as FluconazoleStartDate_GC,
+       fn_gregorian_to_ethiopian_calendar(Fluconazole_End_Date, 'Y-M-D')   as FluconazoleEndDate,
+       Fluconazole_End_Date                                                as FluconazoleEndDate_GC
 
 FROM FollowUp
          inner join tmp_tpt on tmp_tpt.encounter_id = FollowUp.encounter_id

@@ -379,5 +379,5 @@ select Sex,
        CASE
            WHEN IsPregnant = 'Yes' THEN 'Yes'
            WHEN BreastFeeding = 'Yes' THEN 'Yes'
-           ELSE 'No' END            AS PMCT_ART
+           ELSE 'No' END            AS PMTCT_ART
 from vl_eligibility t;
