@@ -2,17 +2,16 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
-import mysql.connector
 import csv
 import os
 import sys
 import json
 from ethiopian_date import EthiopianDateConverter
-from ttkthemes import ThemedTk
 import hashlib
 import zipfile
 import glob
 import logging
+import mysql.connector
 
 def resource_path(relative_path):
     """ Get the absolute path to the resource (works for development and PyInstaller) """
@@ -48,15 +47,13 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-root = ThemedTk()
-root.get_themes()
-root.set_theme("arc")
+root = tk.Tk()
 root.title("SQL Extraction Tool")
 root.geometry("400x200")
 root.eval('tk::PlaceWindow . center')
 
 progress = ttk.Progressbar(root, orient="horizontal", length=300, mode="determinate")
-progress.grid(row=6, column=0, columnspan=2, pady=10)
+progress.grid_forget()
 
 facility_details_query = """
 select state_province as Region, city_village as Woreda, mamba_dim_location.name as Facility from mamba_fact_location_tag
@@ -115,7 +112,8 @@ def export_to_csv(queries, gregorian_start_date, gregorian_end_date):
             host=DB_HOST,
             user=DB_USER,
             password=DB_PASS,
-            database=DB_NAME
+            database=DB_NAME,
+            auth_plugin='mysql_native_password',
         )
         cursor = conn.cursor()
         
@@ -125,6 +123,7 @@ def export_to_csv(queries, gregorian_start_date, gregorian_end_date):
         total_queries = len(queries)
         progress['maximum'] = total_queries
         progress['value'] = 0
+        progress.grid(row=6, column=0, columnspan=2, pady=10)
         cursor.execute(facility_details_query)
         facility_details = cursor.fetchall()
         facility_name = facility_details[0][2].replace(" ", "").replace("_", "")
@@ -176,6 +175,7 @@ def export_to_csv(queries, gregorian_start_date, gregorian_end_date):
     finally:
       
         progress['value'] = 0  # Reset progress bar after completion
+        progress.grid_forget()
 
 def run_query():
     selected_month = combo_month.get()
