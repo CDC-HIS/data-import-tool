@@ -85,6 +85,53 @@
            "Sex": {
                  "FEMALE": "F",
                  "MALE": "M"
+            },
+            "FollowupStatus": {
+                 "Alive": "Alive on ART",
+                 "Restart medication":"Restart"
+            },
+             "WHOStage": {
+                "WHO stage 1 adult": "Stage One",
+                "WHO stage 2 adult": "Stage Two",
+                "WHO stage 3 adult": "Stage Three",
+                "WHO stage 4 adult": "Stage Four",
+                "WHO stage 1 peds": "T1"
+            },
+            "FpMethodUsed": {
+                "Injectable contraceptives": "Injectable hormones",
+                "Implantable contraceptive (unspecified type)": "implantable",
+                "Oral contraception": "Oral contraceptive pills",
+                "Vasectomy": "Vasectomy/tubal legation"
+            },
+            "NutritionalStatus": {
+                "Malnutrition of moderate degree (Gomez: 60% to Less than 75% of Standard Weight)": "Moderate Malnutrition",
+                "Malnutrition of mild degree (Gomez: 75% to Less than 90% of Standard Weight)": "Mild Malnutrition",
+                "Obese Abdomen": "Obese",
+                "Severe protein-calorie malnutrition (Gomez: Less than 60% of Standard Weight)": "Sever Malnutrition"
+            },
+            "FunctionalStatus": {
+                "Patient ambulatory": "Ambulatory",
+                "Physically able to work": "Working"
+            },
+            "TPT_Type": {
+                "3HP": "Alternate",
+                "6H": "INH"
+            },
+            "Viral_Load_Status": {
+                "HIV infection with high viral load": "High VL",
+                "Low-level viremia": "Low Level Viremia",
+                "Uncontrolled": "Unsuppressed"
+            },
+            "DSD_Category": {
+                "Advanced HIV disease model": "AHD (Advanced HIV Disease Model)",
+                "Appointment spacing model / 6MMD": "Appointment Spacing Model (ASM)/6MMD",
+                "DSD for maternal child health": "DSD for MCH",
+                "Health extension professional led community": "HEP-CAG(Health Extension Professional Led Community Based Group)",
+                "DSD for key populations": "KP_DSD",
+                "Community based group model by peer": "PCAD (Community Based Group model led by Peer) "
+            },
+            "CCA_Screened": {
+                "Cervical cancer screening performed": "Yes"
             }
         }
     },
@@ -165,6 +212,10 @@
             "NutritionalScrenningStatus": {
                 "Undernourished": "UnderNourished",
                 "Overweight": "OverWeight"
+            },
+            "SexForNutrition": {
+                "F": "Female",
+                "M": "Male"
             }
         }
     },
@@ -203,6 +254,99 @@
              "Sex": {
                  "FEMALE": "F",
                  "MALE": "M"
+            },
+         "follow_up_status": {
+            "Alive": "Alive on ART",
+            "Restart medication":"Restart"
+         },
+            "viral_load_status": {
+                "Low-level viremia":"Low Level Viremia",
+                "HIV infection with high viral load": "High VL"
+            },
+            "ReasonForVLTest": {
+                "First viral load test at 6 months or longer post ART ": "1st VL at 6 months or longer post ART",
+                "Second viral load test at 12 months post ART ": "2nd VL at 12 month post ART",
+                "Annual viral load test ": "Annual VL Test",
+                "At 34-36 weeks of gestation ": "At 34-36 weeks of gestation",
+                "At the first antenatal care visit ": "At the first ANC visit",
+                "Every six months until MTCT ends ": "Every six month until MTCT ends",
+                "Six months after the first viral load test at postnatal period ": "Six months after the first VL at postnatal period",
+                "Three months after delivery ": "Three months after delivery",
+                "Viral load after EAC: confirmatory viral load where initial viral load greater than 1000 copies per ml ": "VL after EAC: Confirmatory VL:Initial VL > 1000 copies/ml ",
+                "Viral load after EAC: repeat viral load where initial viral load greater than 50 and less than 1000 copies per ml ": "VL after EAC: Repeat VL Initial VL >50 to <= 1000 copies/ml"
+            },
+            "ARVRegimensLine": {
+                	"1a30 - D4T(30)+3TC+NVP" : "1",
+                    "1a40 - D4T(40)+3TC+NVP" : "1",
+                    "1b30 - D4T(30)+3TC+EFV" : "1",
+                    "1b40 - D4T(40)+3TC+EFV" : "1",
+                    "1c - AZT+3TC+NVP" : "1",
+                    "1d - AZT+3TC+EFV" : "1",
+                    "2a - ABC+DDL+LPV" : "2",
+                    "2b - ABC+DDL+NFV" : "2",
+                    "2c - TDF+DDL+LPV" : "2",
+                    "2d - TDF+DDL+NFV" : "2",
+                    "4a - D4T+3TC+NVP" : "1",
+                    "4b - D4T+3TC+EFV" : "1",
+                    "4c - AZT+3TC+NVP" : "1",
+                    "4d - AZT+3TC+EFV" : "1",
+                    "5a - ABC+DDL+LPY" : "2",
+                    "5b - ABC+DDL+NFV" : "2",
+                    "5c - TDF+DDL+LPV" : "2",
+                    "1a - Invalid Regimen 1a" : "1",
+                    "1e - TDF+3TC+EFV" : "1",
+                    "1f - TDF+3TC+NVP" : "1",
+                    "1g - ABC+3TC+EFV" : "1",
+                    "1h - ABC+3TC+NVP" : "1",
+                    "4e - TDF+3TC+EFV" : "1",
+                    "4f - AZT+3TC+LPVr" : "1",
+                    "4g - ABC+3TC+LPVr" : "1",
+                    "2e - AZT+3TC+LPVr" : "2",
+                    "2f - AZT+3TC+ATVr" : "2",
+                    "2g - TDF+3TC+LPVr" : "2",
+                    "2h - TDF+3TC+ATVr" : "2",
+                    "2i - ABC+3TC+LPVr" : "2",
+                    "5d - TDF+DDL+NFV" : "2",
+                    "5e - ABC+3TC+LPVr" : "2",
+                    "5f - AZT+3TC+LPVr" : "2",
+                    "5g - TDF+3TC+EFV" : "2",
+                    "5h - ABC+3TC+EFV" : "2",
+                    "5i - TDF+3TC+LPVr" : "2",
+                    "5j - ABC+3TC+LPVr" : "2",
+                    "Oth1A - Other first line Adult" : "1",
+                    "Oth1C - Other first line Child" : "1",
+                    "Oth2A - Other second line Adult" : "2",
+                    "Oth2C - Other second line Child" : "2",
+                    "3a - DRVr+DTG+AZT/3TC" : "3",
+                    "3b - DRVr+DTG+TDF/3TC" : "3",
+                    "6a - DRVr+RAL+AZT+3TC" : "3",
+                    "6b - DRVr+RAL+TDF+3TC" : "3",
+                    "6c - DRVr+DTG+AZT+3TC" : "3",
+                    "6d - DRVr+DTG+TDF+3TC" : "3",
+                    "Oth3A - Other third line adult" : "3",
+                    "Oth3C - Other third line child" : "3",
+                    "1j - TDF+3TC+DTG" : "1",
+                    "4i - TDF+3TC+DTG" : "1",
+                    "1k - AZT+3TC+DTG" : "1",
+                    "4j - ABC+3TC+DTG" : "1",
+                    "4K - AZT+3TC+DTG" : "1",
+                    "4L - ABC+3TC+EFV" : "1",
+                    "5k - RAL+AZT+3TC" : "2",
+                    "5l - RAL+ABC+3TC" : "2",
+                    "5m - ABC+3TC+DTG" : "2",
+                    "5n - AZT+3TC+DTG" : "2",
+                    "3d - DRV/r+ABC+EFV+3TC" : "3",
+                    "6f - DRV/r+DTG+ABC+3TC" : "3",
+                    "2j - ABC+3TC+LPV/r" : "2",
+                    "2k - AZT+3TC+DTG" : "2",
+                    "3c - DRV/r+ABC+3TC+DTG" : "3",
+                    "3e - DRV/r+TDF+3TC+EFV" : "3",
+                    "3f - DRV/r+AZT+3TC+EFV" : "3",
+                    "4g - ABC+3TC+LPV/r" : "1",
+                    "4h - Other specify" : "1",
+                    "5o - TDF+3TC+DTG" : "2",
+                    "6g - DRV/r+ABC+3TC+EFV" : "3",
+                    "6h - DRV/r+AZT+3TC+EFV" : "3"
             }
         }
     },
@@ -232,9 +376,6 @@
             "date_eac_provided_1": "date_eac_provided_1",
             "date_eac_provided_2": "date_eac_provided_2",
             "date_eac_provided_3": "date_eac_provided_3",
-            "date_eac_provided_4": "date_eac_provided_4",
-            "date_eac_provided_5": "date_eac_provided_5",
-            "date_eac_provided_6": "date_eac_provided_6",
             "viral_load_sent_date_cf": "viral_load_sent_date_cf",
             "viral_load_perform_date_cf": "viral_load_perform_date_cf",
             "viral_load_status_cf": "viral_load_status_cf",
@@ -253,6 +394,24 @@
            "Sex": {
                  "FEMALE": "F",
                  "MALE": "M"
+            },
+            "follow_up_status": {
+                "Alive": "Alive on ART",
+                "Restart medication":"Restart"
+            },
+            "routine_viral_load": {
+                "First viral load test at 6 months or longer post ART": "1st VL at 6 months or longer post ART",
+                "Second viral load test at 12 months post ART": "2nd VL at 12 month post ART",
+                "Annual viral load test": "Annual VL Test"
+            },
+            "target_cf": {
+                "Suspected Antiretroviral failure": "Suspected ART Failure",
+                "Repeat or confirmatory VL: initial viral load greater than 1000": "Repeat or confirmatory VL > 1000 copies per ml"
+            },
+            "viral_load_status": {
+                "HIV infection with high viral load": "High VL",
+                "Low-level viremia": "Low Level Viremia",
+                "Uncontrolled": "Unsuppressed"
             }
         }
     },
@@ -292,6 +451,13 @@
             "Sex": {
                  "FEMALE": "F",
                  "MALE": "M"
+            },
+            "follow_up_status": {
+                "Alive": "Alive on ART",
+                "Restart medication":"Restart"
+            },
+            "viral_load_status": {
+
             }
         }
     },
@@ -343,9 +509,29 @@
             "ReportMonth": "ReportMonth"
         },
         "field_value_mapping": {
+            "FollowupStatus": {
+                "Alive": "Alive on ART",
+                "Restart medication":"Restart"
+            },
             "Sex": {
                  "FEMALE": "F",
                  "MALE": "M"
+            },
+              "TPT_Type": {
+                "6H": 0,
+                "3HP": 2,
+                "": -1
+            },
+            "TPT_TypeAlt": {
+                "": -1,
+                "3HP": 0
+            },
+            "WHOStage": {
+                "WHO stage 1 adult": "I",
+                "WHO stage 2 adult": "II",
+                "WHO stage 3 adult": "III",
+                "WHO stage 4 adult": "IV",
+                "WHO stage 1 peds": "T1"
             }
         }
     }

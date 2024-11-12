@@ -3,7 +3,42 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="/processed_csv/Tx_Curr_AHD_LineList_DillaHealthCenter7050740093_Meskerem_2017.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/processed_csv/Tx_Curr_HVL_LineList_DillaHealthCenter7050740093_Meskerem_2017.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/processed_csv/Tx_Curr_LineList_DillaHealthCenter7050740093_Meskerem_2017.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/processed_csv/Tx_Curr_TPT_LineList_DillaHealthCenter7050740093_Meskerem_2017.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/processed_csv/Tx_Curr_VLEligibleNew_LineList_DillaHealthCenter7050740093_Meskerem_2017.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/processed_csv/Tx_Curr_VLTestReceived_LineList_DillaHealthCenter7050740093_Meskerem_2017.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

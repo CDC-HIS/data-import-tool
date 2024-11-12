@@ -220,8 +220,8 @@ WITH FollowUp AS (select follow_up.encounter_id,
                       Left join switch_sub_date as sub_switch_date ON sub_switch_date.client_id = f_case.client_id)
 select
     Sex,
-    Weight,
-    Age,
+    weight as Weight,
+    age as Age,
     date_hiv_confirmed,
     art_start_date,
     FollowUpDate,

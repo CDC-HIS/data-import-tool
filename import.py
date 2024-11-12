@@ -21,7 +21,7 @@ DB_NAME = "AggregateDB"
 # Configure logging
 logging.basicConfig(
     filename='import_tool.log',
-    level=logging.INFO,
+    level=logging.ERROR,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
@@ -171,12 +171,16 @@ def process_data_and_insert(cursor, report_data,report):
                 original_value = values[field]
                 # Check if the original value has a replacement in mappings
                 if original_value in mappings:
+                    print("Working on Field ",field,"Original Value ",original_value)
                     values[field] = mappings[original_value]  # Replace value
-        insert_query = generate_insert_query(table_name, header_mapping)
-        print(insert_query)
-        print(values)
-        cursor.execute(insert_query, values)
-        
+        try:
+            insert_query = generate_insert_query(table_name, header_mapping)
+            cursor.execute(insert_query, values)
+            # logging.info("Row %d: Inserted data into '%s'", values, table_name)
+        except Exception as e:
+            logging.error("Row %s: Failed to insert data into '%s': %s", values, table_name, e)
+            continue
+
 def move_imported_file(file_pattern):
     os.makedirs('processed_csv', exist_ok=True)
     for file_path in glob.glob(file_pattern):
