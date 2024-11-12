@@ -132,6 +132,39 @@
              "Sex": {
                  "FEMALE": "F",
                  "MALE": "M"
+            },
+            "DSD_Category": {
+                "Appointment spacing model / 6MMD": "Appointment Spacing Model (ASM)/6MMD",
+                "DSD for key populations": "KP_DSD",
+                "Health extension professional led community": "HEP-CAG(Health Extension Professional Led Community Based Group)",
+                "Community based group model by peer": "PCAD (Community Based Group model led by Peer)",
+                "Advanced HIV disease model": "AHD (Advanced HIV Disease Model)",
+                "DSD for maternal child health": "DSD for MCH"
+            },
+            "FollowUpStatus": {
+                "Alive": "Alive on ART",
+                "Restart medication":"Restart"
+            },
+            "ARVRegimen": {
+                "1b30 - D4T(30)+3TC+EFV": "1b30",
+                "1c - AZT+3TC+NVP": "1c",
+                "1d - AZT+3TC+EFV": "1d",
+                "1e - TDF+3TC+EFV": "1e",
+                "1f - TDF+3TC+NVP": "1f",
+                "1j - TDF+3TC+DTG": "1j",
+                "2e - AZT+3TC+LPVr": "2e",
+                "4c - AZT+3TC+NVP": "4c",
+                "4e - TDF+3TC+EFV": "4e",
+                "4g - ABC+3TC+LPVr": "4g",
+                "4i - TDF+3TC+DTG": "4i",
+                "4j - ABC+3TC+DTG": "4j"
+            },
+            "TB_SreeningStatus": {
+                "Negative result": "TB_Negative"
+            },
+            "NutritionalScrenningStatus": {
+                "Undernourished": "UnderNourished",
+                "Overweight": "OverWeight"
             }
         }
     },
