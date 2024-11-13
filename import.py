@@ -53,7 +53,7 @@ def verify_and_extract_zip_files(directory):
     zip_files = glob.glob(os.path.join(directory, "*.zip"))
     
     if not zip_files:
-        print("No zip files found in the directory.")
+        logging.error("No zip files found in the directory.")
         return
     
     for zip_path in zip_files:
@@ -61,7 +61,7 @@ def verify_and_extract_zip_files(directory):
         checksum_path = f"{zip_path}_checksum.txt".replace(".zip","")
         
         if not os.path.exists(checksum_path):
-            print(f"No checksum file found for: {zip_path}")
+            logging.error(f"No checksum file found for: {zip_path}")
             continue
         
         # Calculate the actual checksum of the zip file
@@ -171,7 +171,6 @@ def process_data_and_insert(cursor, report_data,report):
                 original_value = values[field]
                 # Check if the original value has a replacement in mappings
                 if original_value in mappings:
-                    print("Working on Field ",field,"Original Value ",original_value)
                     values[field] = mappings[original_value]  # Replace value
         try:
             insert_query = generate_insert_query(table_name, header_mapping)

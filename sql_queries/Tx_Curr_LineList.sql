@@ -115,7 +115,7 @@ select sex                                                                   as 
        fn_gregorian_to_ethiopian_calendar(LMP_Date, 'Y-M-D')                 as LMP_Date,
        LMP_Date                                                              as LMP_Date_GC,
        FLOOR(DATEDIFF(REPORT_END_DATE, art_start_date) / 30.4375)            AS MonthsOnART,
-       latestDSD.DSD_Category,
+       latestDSD.DSD_Category as DSD_Category,
        stages_of_disclosure                                                  as ChildDisclosueStatus
 from FollowUp
          inner join tx_curr on FollowUp.encounter_id = tx_curr.encounter_id
