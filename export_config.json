@@ -4,5 +4,6 @@
     "Tx_Curr_AHD_LineList": "sql_queries/Tx_Curr_AHD_LineList.sql",
     "Tx_Curr_HVL_LineList": "sql_queries/Tx_Curr_HVL_LineList.sql",
     "Tx_Curr_VLEligibleNew_LineList": "sql_queries/Tx_Curr_VLEligibleNew_LineList.sql",
-    "Tx_Curr_TPT_LineList": "sql_queries/Tx_Curr_TPT_LineList.sql"
+    "Tx_Curr_TPT_LineList": "sql_queries/Tx_Curr_TPT_LineList.sql",
+    "Tx_Curr_OutComeList": "sql_queries/Tx_Curr_OutComeList.sql"
 }
