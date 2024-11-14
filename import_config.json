@@ -687,8 +687,33 @@
                 "WHO stage 2 adult": "II",
                 "WHO stage 3 adult": "III",
                 "WHO stage 4 adult": "IV",
-                "WHO stage 1 peds": "T1"
+                "WHO stage 1 peds": "T1",
+                "WHO stage 3 peds": "T3"
             }
+        }
+    },
+    "Tx_Curr_OutComeList":  {
+        "description":"Description of Tx Curr Out Come Line List",
+        "header_mapping": {
+            "TOs": "TOs",
+            "Losts": "Losts",
+            "Drops": "Drops",
+            "Deads": "Deads",
+            "Stops": "Stops",
+            "Not_Updated": "Not_Updated",
+            "Traced_Back": "Traced_Back",
+            "Restarts": "Restarts",
+            "TI": "TI",
+            "New": "New",
+            "Region": "Region",
+            "Woreda": "Woreda",
+            "Facility": "Facility",
+            "HMISCode": "HMISCode",
+            "ReportYear": "ReportYear",
+            "ReportMonth": "ReportMonth"
+        },
+        "field_value_mapping": {
+
         }
     }
 }

@@ -25,12 +25,12 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
+
 # Load configuration file for report name mappings
 def load_config(config_path):
     try:
         with open(config_path, 'r') as config_file:
-            config = json.load(config_file)
-        return config
+            return json.load(config_file)
     except FileNotFoundError:
         logging.error(f"Configuration file {config_path} not found.")
         return {}
@@ -39,8 +39,8 @@ def load_config(config_path):
         return {}
 
 
+# Load configuration file for report name mappings
 def calculate_checksum(file_path):
-    """Calculates the SHA-256 checksum of a file."""
     sha256_hash = hashlib.sha256()
     with open(file_path, "rb") as f:
         for byte_block in iter(lambda: f.read(4096), b""):
@@ -49,51 +49,31 @@ def calculate_checksum(file_path):
 
 
 def verify_and_extract_zip_files(directory):
-    """Verifies all zip files in the directory against their checksum files."""
     zip_files = glob.glob(os.path.join(directory, "*.zip"))
-    
-    if not zip_files:
-        logging.error("No zip files found in the directory.")
-        return
-    
     for zip_path in zip_files:
-        # Derive the corresponding checksum file path
-        checksum_path = f"{zip_path}_checksum.txt".replace(".zip","")
-        
+        checksum_path = f"{zip_path}_checksum.txt".replace(".zip", "")
         if not os.path.exists(checksum_path):
             logging.error(f"No checksum file found for: {zip_path}")
             continue
-        
-        # Calculate the actual checksum of the zip file
         actual_checksum = calculate_checksum(zip_path)
-        
-        # Read the expected checksum from the checksum file
         with open(checksum_path, "r") as checksum_file:
             expected_checksum = checksum_file.read().strip()
-        
-        # Compare checksums
         if actual_checksum == expected_checksum:
-            logging.info(f"{os.path.basename(zip_path)}: Checksum verified successfully.")
             extract_zip_without_directory(zip_path, directory)
         else:
             logging.error(f"{os.path.basename(zip_path)}: Checksum verification failed.")
 
 
+# Extract files from zip without directory structure
 def extract_zip_without_directory(zip_path, target_directory):
-    """
-    Extracts all files from the zip file at zip_path into target_directory
-    without preserving directory structure.
-    """
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         for member in zip_ref.namelist():
-            # Check if it is a file (not a directory)
             if not member.endswith('/'):
-                # Define the full path for the extracted file
                 extracted_path = os.path.join(target_directory, os.path.basename(member))
-                
-                # Extract the file content to the specified path
                 with open(extracted_path, 'wb') as output_file:
                     output_file.write(zip_ref.read(member))
+
+
 # Read CSV files based on report_name mappings from config and include month/year
 def read_csv_files_based_on_config(directory, config):
     file_pattern = os.path.join(directory, "*.csv")
@@ -126,8 +106,8 @@ def read_csv_files_based_on_config(directory, config):
                 data.append(headers)
                 for row in reader:
                     data.append(row)
-            
-            csv_data_by_report[report_name] = {
+            report_name_with_time = f"{report_name}_{month}_{year}"
+            csv_data_by_report[report_name_with_time] = {
                 "description": config[report_name].get("description", ""),
                 "month": month,
                 "year": year,
@@ -141,6 +121,7 @@ def read_csv_files_based_on_config(directory, config):
     
     return csv_data_by_report
 
+
 def generate_insert_query(table_name, header_mapping):
     columns = ', '.join(header_mapping.values())
     placeholders = ', '.join(['%({})s'.format(col) for col in header_mapping.values()])
@@ -151,7 +132,7 @@ def generate_insert_query(table_name, header_mapping):
     return generated_insert_query
 
 
-def process_data_and_insert(cursor, report_data,report):
+def process_data_and_insert(cursor, report_data, report):
     table_name = report
     header_mapping = report_data.get("header_mapping", {})
     field_value_mapping = report_data.get("field_value_mapping", {})
@@ -180,6 +161,7 @@ def process_data_and_insert(cursor, report_data,report):
             logging.error("Row %s: Failed to insert data into '%s': %s", values, table_name, e)
             continue
 
+
 def move_imported_file(file_pattern):
     os.makedirs('processed_csv', exist_ok=True)
     for file_path in glob.glob(file_pattern):
@@ -197,10 +179,11 @@ def move_imported_file(file_pattern):
             logging.error(f"Error moving file {file_path}: {e}")
     return {}
 
-    
+
 # Usage
 verify_and_extract_zip_files('output_csv')
 # Main execution block
+sp_parameters = set()
 try:
     with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
         cursor = conn.cursor()
@@ -214,14 +197,14 @@ try:
         
         # Read CSV files based on the config
         csv_data = read_csv_files_based_on_config(directory, config)
-        
         if csv_data:
             for report, content in csv_data.items():
                 logging.info(f"Processing data for {report} ({content['description']}), "
                              f"Month: {content['month']}, Year: {content['year']}")
                 
-                HMIS_CODE = content['data'][2][-1]  # Handle carefully, check row structure
-                
+                HMIS_CODE = content['data'][1][-1]  # Handle carefully, check row structure
+                parts = report.split("_")
+                report = "_".join(parts[:-2])  # Extract report name without month/year
                 # Check for existing data to delete
                 delete_existing = f"""
                     DELETE FROM {report}
@@ -246,28 +229,29 @@ try:
                 
                 # Move processed file
                 file_pattern = os.path.join('output_csv',
-                                            f"*{content['data'][2][-2]}{content['data'][2][-1]}_{content['month']}_{content['year']}.csv")
+                                            f"*{content['data'][1][-2]}{content['data'][1][-1]}_{content['month']}_{content['year']}.csv")
                 move_imported_file(file_pattern)
-                
                 # Execute stored procedure
-                try:
-                    sp_query = f"""
-                        EXEC SP_AggregateHivindicators '{content['data'][2][-4]}', '{content['data'][2][-3]}',
-                        '{content['data'][2][-2]}', '{content['data'][2][-1]}', '{content['year']}', '{content['month']}'
-                    """
-                    cursor.execute(sp_query)
-                    logging.info(f"Executed stored procedure for {report}")
-                except Exception as e:
-                    logging.error(f"Error executing stored procedure for {report}: {e}")
-                    conn.rollback()
-                    continue
-        
+                curr_parameters = (
+                content['data'][1][-4], content['data'][1][-3], content['data'][1][-2],
+                content['data'][1][-1], content['year'], content['month'])
+                sp_parameters.add(curr_parameters)
+                continue
         # Commit the transaction
+        for sp_combination in sp_parameters:
+            region, zone, health_center, code, year, month = sp_combination
+            try:
+                sp_query = f"""
+                                 EXEC SP_AggregateHivindicators '{region}', '{zone}', '{health_center}', '{code}', '{year}', '{month}'
+                             """
+                cursor.execute(sp_query)
+                logging.error(f"Executed stored procedure for {sp_combination}")
+            except Exception as e:
+                logging.error(f"Error executing stored procedure for {report}: {e}")
+                conn.rollback()
         conn.commit()
-
 except Exception as e:
     logging.error(f"Critical error in main execution block: {e}")
 finally:
     if cursor:
         cursor.close()
-    
