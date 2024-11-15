@@ -234,18 +234,18 @@ try:
                 # Execute stored procedure
                 curr_parameters = (
                 content['data'][1][-4], content['data'][1][-3], content['data'][1][-2],
-                content['data'][1][-1], content['year'], content['month'])
+                content['data'][1][-1], content['month'], content['year'])
                 sp_parameters.add(curr_parameters)
                 continue
         # Commit the transaction
         for sp_combination in sp_parameters:
-            region, zone, health_center, code, year, month = sp_combination
+            region, zone, health_center, code, month, year = sp_combination
             try:
                 sp_query = f"""
-                                 EXEC SP_AggregateHivindicators '{region}', '{zone}', '{health_center}', '{code}', '{year}', '{month}'
+                                 EXEC SP_AggregateHivindicators '{region}', '{zone}', '{health_center}', '{code}', '{month}', '{year}'
                              """
                 cursor.execute(sp_query)
-                logging.error(f"Executed stored procedure for {sp_combination}")
+                logging.info(f"Executed stored procedure for {sp_combination}")
             except Exception as e:
                 logging.error(f"Error executing stored procedure for {report}: {e}")
                 conn.rollback()
