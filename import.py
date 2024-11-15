@@ -9,7 +9,6 @@ import shutil
 import hashlib
 import zipfile
 
-from IPython.utils.coloransi import value
 
 # Database connection parameters
 DRIVER = "ODBC Driver 17 for SQL Server"
