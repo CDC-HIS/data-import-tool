@@ -800,7 +800,13 @@
           "Curr_Date_Client_Served_in_RefferedHF": "Curr_Date_Client_Served_in_RefferedHF",
           "Curr_CCS_Screen_Result": "Curr_CCS_Screen_Result",
           "Next_AppointmentDate_4_CCS": "Next_AppointmentDate_4_CCS",
-          "PatientGUID": "PatientGUID"
+          "PatientGUID": "PatientGUID",
+          "Region": "Region",
+          "Woreda": "Woreda",
+          "Facility": "Facility",
+          "HMISCode": "HMISCode",
+          "ReportYear": "ReportYear",
+          "ReportMonth": "ReportMonth"
       },
       "field_value_mapping":{
          "FollowUpStatus": {
