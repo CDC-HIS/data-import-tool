@@ -180,16 +180,7 @@ def export_to_csv(queries, gregorian_start_date, gregorian_end_date):
 def run_query():
     selected_month = combo_month.get()
     selected_year = entry_year.get()
-    if not selected_month:
-        messagebox.showerror("Error", "Please select a month.")
-        logging.error(f"Please select a month.")
-        return
-
-    if not selected_year or len(selected_year) != 4 or not selected_year.isdigit():
-        messagebox.showerror("Error", "Please enter a valid 4-digit year.")
-        logging.error("Please enter a valid 4-digit year.")
-        return
-
+    
     month = month_mapping.get(selected_month)
     year = int(selected_year)
     conv = EthiopianDateConverter.to_gregorian
@@ -218,8 +209,6 @@ combo_month = ttk.Combobox(root, values=months, state="readonly", width=25)
 combo_month.grid(row=3, column=1, padx=10, pady=5, sticky="w")
 combo_month.set(months[0])
 
-def validate_year(new_value):
-    return new_value.isdigit() and len(new_value) <= 4
 
 # UI Components Year
 tk.Label(root, text="Year (YYYY):").grid(row=4, column=0, pady=5, padx=10, sticky="e")
