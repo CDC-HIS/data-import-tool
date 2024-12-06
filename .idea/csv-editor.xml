@@ -31,13 +31,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/processed_csv/Tx_Curr_OutComeList_DillaHealthCenter7050740093_Tikimt_2016.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="/processed_csv/Tx_Curr_TPT_LineList_DillaHealthCenter7050740093_Meskerem_2017.csv">
           <value>
             <Attribute>

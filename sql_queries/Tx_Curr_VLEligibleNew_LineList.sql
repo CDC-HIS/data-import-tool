@@ -31,28 +31,18 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                          next_visit_date,
                          treatment_end_date,
                          date_of_event                       date_hiv_confirmed,
-                         sex,
-                         current_age,
-                         patient_name,
                          weight_text_                     as weight,
-                         mrn,
-                         uan,
-                         uuid,
                          date_of_reported_hiv_viral_load  as viral_load_sent_date,
-                         regimen_change,
-                         mobile_no
+                         regimen_change
                   FROM mamba_flat_encounter_follow_up follow_up
                            JOIN mamba_flat_encounter_follow_up_1 follow_up_1
                                 ON follow_up.encounter_id = follow_up_1.encounter_id
                            JOIN mamba_flat_encounter_follow_up_2 follow_up_2
                                 ON follow_up.encounter_id = follow_up_2.encounter_id
-                           JOIN mamba_flat_encounter_follow_up_3 follow_up_3
+                           LEFT JOIN mamba_flat_encounter_follow_up_3 follow_up_3
                                 ON follow_up.encounter_id = follow_up_3.encounter_id
-                           JOIN mamba_flat_encounter_follow_up_4 follow_up_4
-                                ON follow_up.encounter_id = follow_up_4.encounter_id
-                           JOIN mamba_dim_client_art_follow_up dim_client
-                                ON follow_up.client_id = dim_client.client_id
-                           JOIN mamba_dim_person person on person.person_id = follow_up.client_id),
+                           LEFT JOIN mamba_flat_encounter_follow_up_4 follow_up_4
+                                ON follow_up.encounter_id = follow_up_4.encounter_id),
 
 
      tmp_all_art_follow_ups as (SELECT encounter_id,
@@ -179,9 +169,12 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                                f_case.pregnancy_status                       as IsPregnant,
                                mobile_no                                     as MobilePhoneNumber,
                                mrn                                           as MRN,
-                               uuid                                          as PatientGUID,
+                               patient_uuid                                  as PatientGUID,
                                f_case.client_id                              as PatientId,
-                               sex                                           as Sex,
+                               CASE Sex
+                                   WHEN 'FEMALE' THEN 'F'
+                                   WHEN 'MALE' THEN 'M'
+                                   end                                       as Sex,
                                vlperfdate.viral_load_count                   as viral_load_count,
                                vlperfdate.viral_load_perform_date            as viral_load_perform_date,
                                vlsentdate.VL_Sent_Date                       as viral_load_sent_date,
@@ -341,7 +334,7 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                         FROM FollowUp AS f_case
                                  INNER JOIN latest_alive_restart
                                             ON f_case.encounter_id = latest_alive_restart.encounter_id
-
+                                 LEFT JOIN mamba_dim_client client on latest_alive_restart.client_id = client.client_id
                                  LEFT JOIN tmp_vl_performed_date_3 as vlperfdate
                                            ON vlperfdate.client_id = f_case.client_id
 
@@ -357,16 +350,16 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                         where all_art_follow_ups.follow_up_status in ('Alive', 'Restart Medication'))
 select Sex,
        Weight,
-       current_age                  as Age,
+       current_age          as Age,
        date_hiv_confirmed,
        art_start_date,
        FollowUpDate,
        IsPregnant,
-       regimen                      as ARVDispendsedDose,
-       t.arv_dispensed_dose  as ARTDoseDays,
+       regimen              as ARVDispendsedDose,
+       t.arv_dispensed_dose as ARTDoseDays,
        next_visit_date,
        follow_up_status,
-       treatment_end_date           as art_dose_End,
+       treatment_end_date   as art_dose_End,
        viral_load_perform_date,
        viral_load_status,
        viral_load_count,
@@ -375,9 +368,10 @@ select Sex,
        date_regimen_change,
        eligiblityDate,
        PatientGUID,
-       t.BreastFeeding as IsBreastfeeding,
+       t.BreastFeeding      as IsBreastfeeding,
+       vl_status_final,
        CASE
            WHEN IsPregnant = 'Yes' THEN 'Yes'
            WHEN BreastFeeding = 'Yes' THEN 'Yes'
-           ELSE 'No' END            AS PMTCT_ART
+           ELSE 'No' END    AS PMTCT_ART
 from vl_eligibility t;

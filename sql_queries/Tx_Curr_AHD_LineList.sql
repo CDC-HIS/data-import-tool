@@ -27,10 +27,7 @@ WITH FollowUp AS (select follow_up.encounter_id,
                          hiv_viral_load                      AS viral_load_count,
                          viral_load_test_indication,
                          treatment_end_date,
-                         sex,
                          weight_text_                        AS Weight,
-                         age,
-                         uuid,
                          height,
                          date_of_event                       AS date_hiv_confirmed,
                          current_who_hiv_stage,
@@ -78,86 +75,123 @@ WITH FollowUp AS (select follow_up.encounter_id,
                                 ON follow_up.encounter_id = follow_up_1.encounter_id
                            JOIN mamba_flat_encounter_follow_up_2 follow_up_2
                                 ON follow_up.encounter_id = follow_up_2.encounter_id
-                           JOIN mamba_flat_encounter_follow_up_3 follow_up_3
-                                ON follow_up.encounter_id = follow_up_3.encounter_id
-                           JOIN mamba_flat_encounter_follow_up_4 follow_up_4
-                                ON follow_up.encounter_id = follow_up_4.encounter_id
-                           JOIN mamba_dim_client_art_follow_up dim_client ON follow_up.client_id = dim_client.client_id
-                           JOIN mamba_dim_person person on person.person_id = follow_up.client_id),
-     tpt_start AS (SELECT patientid, MAX(inhprophylaxis_started_date) AS inhprophylaxis_started_date
-                   FROM FollowUp
-                   WHERE inhprophylaxis_started_date IS NOT NULL
-                   GROUP BY patientid),
-     tpt_completed AS (SELECT patientid, Max(InhprophylaxisCompletedDate) AS InhprophylaxisCompletedDate
+                           LEFT JOIN mamba_flat_encounter_follow_up_3 follow_up_3
+                                     ON follow_up.encounter_id = follow_up_3.encounter_id
+                           LEFT JOIN mamba_flat_encounter_follow_up_4 follow_up_4
+                                     ON follow_up.encounter_id = follow_up_4.encounter_id),
+     tmp_tpt_start AS (SELECT patientid,
+                              inhprophylaxis_started_date                                                                             AS inhprophylaxis_started_date,
+                              ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY inhprophylaxis_started_date DESC, encounter_id DESC) AS row_num
                        FROM FollowUp
-                       WHERE InhprophylaxisCompletedDate IS NOT NULL
-                       GROUP BY patientid),
-     tpt_type AS (SELECT patientid, Max(TB_ProphylaxisType) AS TB_ProphylaxisType
-                  FROM FollowUp
-                  WHERE TB_ProphylaxisType IS NOT NULL
-                  GROUP BY patientid),
-     tpt_dose_ALT AS (SELECT patientid, Max(TPT_DoseDaysNumberALT) AS TPT_DoseDaysNumberALT
-                      FROM FollowUp
-                      WHERE TPT_DoseDaysNumberALT IS NOT NULL
-                      GROUP BY patientid),
+                       WHERE inhprophylaxis_started_date IS NOT NULL),
+     tpt_start as (select * from tmp_tpt_start where row_num = 1),
 
-     tpt_dose_INH AS (SELECT patientid,
-                             Max(TPT_DoseDaysNumberINH) AS TPT_DoseDaysNumberINH
-                      FROM FollowUp
-                      WHERE TPT_DoseDaysNumberINH IS NOT NULL
+     tmp_tpt_completed AS (SELECT patientid,
+                                  InhprophylaxisCompletedDate                                                                             AS InhprophylaxisCompletedDate,
+                                  ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY InhprophylaxisCompletedDate DESC, encounter_id DESC) AS row_num
+                           FROM FollowUp
+                           WHERE InhprophylaxisCompletedDate IS NOT NULL),
+     tpt_completed as (select *
+                       from tmp_tpt_completed
+                       where row_num = 1),
 
-                      GROUP BY patientid),
-     tpt_side_effect AS (SELECT patientid, Max(TPT_SideEffect) AS TPT_SideEffect
-                         FROM FollowUp
-                         WHERE TPT_SideEffect IS NOT NULL
-                         GROUP BY patientid),
-     tb_diagnostic_test AS (SELECT patientid, Max(DiagnosticTest) AS TB_Diagnostic_Test
-                            FROM FollowUp
-                            WHERE DiagnosticTest IS NOT NULL
-                            GROUP BY patientid),
-     tb_diagnostic_result AS (SELECT patientid, Max(DiagnosticTestResult) AS TB_Diagnostic_Result
-                              FROM FollowUp
-                              WHERE DiagnosticTestResult IS NOT NULL
-                              GROUP BY patientid),
-     tb_LF_LAM_result AS (SELECT patientid, Max(LF_LAM_result) AS LF_LAM_result
+     tmp_tpt_type AS (SELECT patientid,
+                             TB_ProphylaxisType                                                                             AS TB_ProphylaxisType,
+                             ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY TB_ProphylaxisType DESC, encounter_id DESC) AS row_num
+                      FROM FollowUp
+                      WHERE TB_ProphylaxisType IS NOT NULL),
+     tpt_type as (select * from tmp_tpt_type where row_num = 1),
+
+     tmp_tpt_dose_ALT AS (SELECT patientid,
+                                 TPT_DoseDaysNumberALT                                                                             AS TPT_DoseDaysNumberALT,
+                                 ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY TPT_DoseDaysNumberALT DESC, encounter_id DESC) AS row_num
                           FROM FollowUp
-                          WHERE LF_LAM_result IS NOT NULL
-                          GROUP BY patientid),
-     tb_Gene_Xpert_result AS (SELECT patientid, Max(Gene_Xpert_result) AS Gene_Xpert_result
-                              FROM FollowUp
-                              WHERE Gene_Xpert_result IS NOT NULL
-                              GROUP BY patientid),
-     tpt_screened AS (SELECT patientid, Max(tb_screened) AS TB_Screened
-                      FROM FollowUp
-                      WHERE tb_screened IS NOT NULL
-                      GROUP BY patientid),
-     tpt_screening AS (SELECT patientid, Max(tb_screening) AS TB_Screening_Result
-                       FROM FollowUp
-                       WHERE tb_screening IS NOT NULL
-                       GROUP BY patientid),
-     tpt_adherence AS (SELECT patientid, Max(TPT_Adherance) AS TPT_Adherence
-                       FROM FollowUp
-                       WHERE TPT_Adherance IS NOT NULL
-                       GROUP BY patientid),
-     ActiveTBTreatmentStarted AS (SELECT patientid, Max(activetbtreatmentStartDate) AS ActiveTBTreatmentStartDate
+                          WHERE TPT_DoseDaysNumberALT IS NOT NULL),
+     tpt_dose_ALT as (select * from tmp_tpt_dose_ALT where row_num = 1),
+
+     tmp_tpt_dose_INH AS (SELECT patientid,
+                                 TPT_DoseDaysNumberINH                                                                             AS TPT_DoseDaysNumberINH,
+                                 ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY TPT_DoseDaysNumberINH DESC, encounter_id DESC) AS row_num
+                          FROM FollowUp
+                          WHERE TPT_DoseDaysNumberINH IS NOT NULL),
+     tpt_dose_INH as (select * from tmp_tpt_dose_INH where row_num = 1),
+
+     tmp_tpt_side_effect AS (SELECT patientid,
+                                    TPT_SideEffect                                                                             AS TPT_SideEffect,
+                                    ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY TPT_SideEffect DESC, encounter_id DESC) AS row_num
+                             FROM FollowUp
+                             WHERE TPT_SideEffect IS NOT NULL),
+     tpt_side_effect as (select * from tmp_tpt_side_effect where row_num = 1),
+
+     tmp_tb_diagnostic_test AS (SELECT patientid,
+                                       DiagnosticTest                                                                             AS TB_Diagnostic_Test,
+                                       ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY DiagnosticTest DESC, encounter_id DESC) AS row_num
+                                FROM FollowUp
+                                WHERE DiagnosticTest IS NOT NULL),
+     tb_diagnostic_test as (select * from tmp_tb_diagnostic_test where row_num = 1),
+
+     tmp_tb_diagnostic_result AS (SELECT patientid,
+                                         DiagnosticTestResult                                                                             AS TB_Diagnostic_Result,
+                                         ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY DiagnosticTestResult DESC, encounter_id DESC) AS row_num
                                   FROM FollowUp
-                                  WHERE activetbtreatmentStartDate IS NOT NULL
-                                  GROUP BY patientid),
-     TBTreatmentCompleted AS (SELECT patientid, Max(ActiveTBTreatmentCompletedDate) AS ActiveTBTreatmentCompletedDate
+                                  WHERE DiagnosticTestResult IS NOT NULL),
+     tb_diagnostic_result as (select * from tmp_tb_diagnostic_result where row_num = 1),
+
+     tmp_tb_LF_LAM_result AS (SELECT patientid,
+                                     LF_LAM_result                                                                             AS LF_LAM_result,
+                                     ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY LF_LAM_result DESC, encounter_id DESC) AS row_num
                               FROM FollowUp
-                              WHERE ActiveTBTreatmentCompletedDate IS NOT NULL
-                              GROUP BY patientid),
-     TBTreatmentDiscontinued AS (SELECT patientid,
-                                        Max(activetbtreatmentDisContinuedDate) AS ActiveTBTreatmentDiscontinuedDate
-                                 FROM FollowUp
-                                 WHERE activetbtreatmentDisContinuedDate IS NOT NULL
-                                 GROUP BY patientid),
-     cca_screened_tmp AS (SELECT DISTINCT patientid,
-                                          CCS_ScreenDoneYes                                                                                            AS CCA_Screened,
-                                          ROW_NUMBER() OVER (PARTITION BY FollowUp.PatientId ORDER BY follow_up_date DESC, FollowUp.encounter_id DESC) AS row_num
+                              WHERE LF_LAM_result IS NOT NULL),
+     tb_LF_LAM_result as (select * from tmp_tb_LF_LAM_result where row_num = 1),
+     tmp_tb_Gene_Xpert_result AS (SELECT patientid,
+                                         Gene_Xpert_result                                                                             AS Gene_Xpert_result,
+                                         ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY Gene_Xpert_result DESC, encounter_id DESC) AS row_num
+                                  FROM FollowUp
+                                  WHERE Gene_Xpert_result IS NOT NULL),
+     tb_Gene_Xpert_result as (select * from tmp_tb_Gene_Xpert_result where row_num = 1),
+
+     tmp_tpt_screened AS (SELECT patientid,
+                                 tb_screened                                                                             AS TB_Screened,
+                                 ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY tb_screened DESC, encounter_id DESC) AS row_num
                           FROM FollowUp
-                          where CCS_ScreenDoneYes IS NOT NULL),
-     cca_screened AS (select * from cca_screened_tmp where row_num = 1),
+                          WHERE tb_screened IS NOT NULL),
+     tpt_screened as (select * from tmp_tpt_screened where row_num = 1),
+     tmp_tpt_screening AS (SELECT patientid,
+                                  tb_screening                                                                             AS TB_Screening_Result,
+                                  ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY tb_screening DESC, encounter_id DESC) AS row_num
+                           FROM FollowUp
+                           WHERE tb_screening IS NOT NULL),
+     tpt_screening as (select * from tmp_tpt_screening where row_num = 1),
+     tmp_tpt_adherence AS (SELECT patientid,
+                                  TPT_Adherance                                                                             AS TPT_Adherence,
+                                  ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY TPT_Adherance DESC, encounter_id DESC) AS row_num
+                           FROM FollowUp
+                           WHERE TPT_Adherance IS NOT NULL),
+     tpt_adherence as (select * from tmp_tpt_adherence where row_num = 1),
+     tmp_ActiveTBTreatmentStarted AS (SELECT patientid,
+                                             activetbtreatmentStartDate                                                                             AS ActiveTBTreatmentStartDate,
+                                             ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY activetbtreatmentStartDate DESC, encounter_id DESC) AS row_num
+                                      FROM FollowUp
+                                      WHERE activetbtreatmentStartDate IS NOT NULL),
+     ActiveTBTreatmentStarted as (select * from tmp_ActiveTBTreatmentStarted where row_num = 1),
+     tmp_TBTreatmentCompleted AS (SELECT patientid,
+                                         ActiveTBTreatmentCompletedDate                                                                             AS ActiveTBTreatmentCompletedDate,
+                                         ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY ActiveTBTreatmentCompletedDate DESC, encounter_id DESC) AS row_num
+                                  FROM FollowUp
+                                  WHERE ActiveTBTreatmentCompletedDate IS NOT NULL),
+     TBTreatmentCompleted as (select * from tmp_TBTreatmentCompleted where row_num = 1),
+     tmp_TBTreatmentDiscontinued AS (SELECT patientid,
+                                            activetbtreatmentDisContinuedDate                                                                             AS ActiveTBTreatmentDiscontinuedDate,
+                                            ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY activetbtreatmentDisContinuedDate DESC, encounter_id DESC) AS row_num
+                                     FROM FollowUp
+                                     WHERE activetbtreatmentDisContinuedDate IS NOT NULL),
+     TBTreatmentDiscontinued as (select * from tmp_TBTreatmentDiscontinued where row_num = 1),
+     tmp_cca_screened_tmp AS (SELECT DISTINCT patientid,
+                                              CCS_ScreenDoneYes                                                                          AS CCA_Screened,
+                                              ROW_NUMBER() OVER (PARTITION BY PatientId ORDER BY follow_up_date DESC, encounter_id DESC) AS row_num
+                              FROM FollowUp
+                              where CCS_ScreenDoneYes IS NOT NULL),
+     cca_screened AS (select * from tmp_cca_screened_tmp where row_num = 1),
 -- VL Sent Date
      tmp_vl_sent_date AS (select PatientId,
                                  encounter_id,
@@ -197,14 +231,19 @@ WITH FollowUp AS (select follow_up.encounter_id,
                        AND treatment_end_date >= REPORT_END_DATE
                        AND follow_up_status in ('Alive', 'Restart medication')),
      tx_curr AS (select * from tx_curr_all where row_num = 1)
-SELECT DISTINCT f_case.sex                                                                       as Sex,
+
+
+SELECT DISTINCT CASE client.sex
+                    WHEN 'FEMALE' THEN 'F'
+                    WHEN 'MALE' THEN 'M'
+                    end                                                                          as Sex,
                 f_case.Weight                                                                    as Weight,
-                f_case.Age                                                                       as Age,
-                f_case.uuid                                                                      as PatientGUID,
+                client.current_age                                                               as Age,
+                client.patient_uuid                                                              as PatientGUID,
                 f_case.height                                                                    as Height,
                 f_case.date_hiv_confirmed                                                        as HIV_Confirmed_Date,
                 f_case.art_start_date                                                            as ARTStartDate,
-                FLOOR(DATEDIFF(REPORT_END_DATE, f_case.art_start_date) / 30.4375)                as MonthsOnART,
+                FLOOR(DATEDIFF(REPORT_END_DATE, f_case.art_start_date) / 30.4375)                   as MonthsOnART,
                 f_case.follow_up_date                                                            as FollowUpDate,
                 f_case.current_who_hiv_stage                                                     as WHOStage,
                 f_case.cd4_count                                                                 as CD4Count,
@@ -287,17 +326,18 @@ SELECT DISTINCT f_case.sex                                                      
                 cca_screened.CCA_Screened                                                        as CCA_Screened,
                 f_case.dsd_category                                                              as DSD_Category,
                 CASE
-                    WHEN f_case.age < 5 THEN 'Yes'
-                    WHEN f_case.age >= 5 AND f_case.cd4_count IS NOT NULL AND
+                    WHEN client.current_age < 5 THEN 'Yes'
+                    WHEN client.current_age >= 5 AND f_case.cd4_count IS NOT NULL AND
                          f_case.cd4_count < 200 THEN 'Yes'
-                    WHEN f_case.age >= 5 AND f_case.current_who_hiv_stage IS NOT NULL AND
-                         (f_case.current_who_hiv_stage = 2 Or f_case.current_who_hiv_stage = 6 Or
-                          f_case.current_who_hiv_stage = 7) THEN 'Yes'
-                    WHEN (f_case.age >= 5 AND f_case.current_who_hiv_stage IS NOT NULL AND
-                          f_case.current_who_hiv_stage = 3) THEN 'Yes'
+                    WHEN client.current_age >= 5 AND f_case.current_who_hiv_stage IS NOT NULL AND
+                         (f_case.current_who_hiv_stage = 'WHO stage 3 adult' Or f_case.current_who_hiv_stage = 'WHO stage 3 peds' Or
+                          f_case.current_who_hiv_stage = 'WHO stage 4 peds') THEN 'Yes'
+                    WHEN (client.current_age >= 5 AND f_case.current_who_hiv_stage IS NOT NULL AND
+                          f_case.current_who_hiv_stage = 'WHO stage 4 adult') THEN 'Yes'
                     ELSE 'No' END                                                                as AHD
 FROM FollowUp AS f_case
          INNER JOIN tx_curr ON f_case.encounter_id = tx_curr.encounter_id
+         LEFT JOIN mamba_dim_client client on tx_curr.PatientId = client_id
          LEFT JOIN vl_performed_date AS vlperfdate ON vlperfdate.PatientId = f_case.PatientId
          LEFT JOIN vl_sent_date AS vlsentdate ON vlsentdate.PatientId = f_case.PatientId
 
@@ -319,7 +359,3 @@ FROM FollowUp AS f_case
          LEFT JOIN TBTreatmentCompleted ON TBTreatmentCompleted.patientid = f_case.PatientId
          LEFT JOIN TBTreatmentDiscontinued ON TBTreatmentDiscontinued.patientid = f_case.PatientId
          LEFT JOIN cca_screened ON cca_screened.patientid = f_case.PatientId;
-
-
-
-

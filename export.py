@@ -26,7 +26,7 @@ def resource_path(relative_path):
 DB_HOST = "localhost"
 DB_USER = "root"
 DB_PASS = "Abcd@1234"
-DB_NAME = "analysis_db"
+DB_NAME = "analytics_db"
 
 start_year = 2013  # start year
 end_year = 2022    # end year

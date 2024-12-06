@@ -32,20 +32,16 @@ WITH FollowUp AS (SELECT follow_up.encounter_id,
                          date_completed_tuberculosis_prophyl AS InhprophylaxisCompletedDate,
                          why_eligible_reason_,
                          tb_diagnostic_test_result              tb_specimen_type,
-                         gender,
-                         age,
-                         uuid,
                          fluconazole_start_date              AS Fluconazole_Start_Date,
                          fluconazole_stop_date               as Fluconazole_End_Date,
                          transfer_in
                   FROM mamba_flat_encounter_follow_up follow_up
                            join mamba_flat_encounter_follow_up_1 follow_up_1
                                 on follow_up.encounter_id = follow_up_1.encounter_id
-                           join mamba_flat_encounter_follow_up_2 follow_up_2
+                           LEFT join mamba_flat_encounter_follow_up_2 follow_up_2
                                 on follow_up.encounter_id = follow_up_2.encounter_id
-                           join mamba_flat_encounter_follow_up_3 follow_up_3
-                                on follow_up.encounter_id = follow_up_3.encounter_id
-                           join mamba_dim_person person on follow_up.client_id = person.person_id),
+                           LEFT join mamba_flat_encounter_follow_up_3 follow_up_3
+                                on follow_up.encounter_id = follow_up_3.encounter_id),
      tmp_tpt_type as (SELECT encounter_id,
                              client_id,
                              TB_ProphylaxisType                                                                                                     AS TptType,
@@ -86,9 +82,12 @@ WITH FollowUp AS (SELECT follow_up.encounter_id,
      latest_follow_up as (select * from tmp_latest_follow_up where row_num = 1),
      tmp_tpt as (SELECT f_case.encounter_id,
                         f_case.client_id,
-                        f_case.gender,
+                        CASE Sex
+                            WHEN 'FEMALE' THEN 'F'
+                            WHEN 'MALE' THEN 'M'
+                            end                             as Sex,
                         f_case.weight_in_kg,
-                        f_case.age,
+                        client.current_age,
                         f_case.hiv_confirmed_date,
                         f_case.art_start_date,
                         f_case.followup_date,
@@ -113,13 +112,14 @@ WITH FollowUp AS (SELECT follow_up.encounter_id,
                         tuberculosis_drug_treatment_start_d As TBTx_StartDate_GC,
                         date_active_tbrx_completed          As TBTx_CompletedDate,
                         date_active_tbrx_completed          As TBTx_CompletedDate_GC,
-                        uuid                                as PatientGUID
+                        client.patient_uuid                 as PatientGUID
                  FROM FollowUp AS f_case
-                          INNER JOIN latest_follow_up ON f_case.encounter_id = latest_follow_up.encounter_id)
+                          INNER JOIN latest_follow_up ON f_case.encounter_id = latest_follow_up.encounter_id
+                          LEFT JOIN mamba_dim_client client on latest_follow_up.client_id = client.client_id)
 
-select tmp_tpt.gender                                                         Sex,
+select tmp_tpt.Sex,
        tmp_tpt.weight_in_kg                                                as Weight,
-       tmp_tpt.age                                                         as Age,
+       tmp_tpt.current_age                                                 as Age,
        tpt_start.inhprophylaxis_started_date                               as TPT_Started_Date,
        tpt_completed.InhprophylaxisCompletedDate                           as TPT_Completed_Date,
        tpt_type.TptType                                                    as TPT_Type,
@@ -174,7 +174,3 @@ FROM FollowUp
 where tmp_tpt.art_end_date >= REPORT_END_DATE
   AND tmp_tpt.follow_up_status in ('Alive', 'Restart medication')
   AND tmp_tpt.art_start_date <= REPORT_END_DATE;
-
-
-
-

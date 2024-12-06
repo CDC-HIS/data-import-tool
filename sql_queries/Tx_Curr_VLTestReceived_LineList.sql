@@ -31,25 +31,16 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                          next_visit_date,
                          treatment_end_date,
                          date_of_event                       date_hiv_confirmed,
-                         sex,
-                         current_age,
-                         patient_name,
-                         weight_text_                     as weight,
-                         mrn,
-                         uan,
-                         uuid
+                         weight_text_                     as weight
                   FROM mamba_flat_encounter_follow_up follow_up
                            JOIN mamba_flat_encounter_follow_up_1 follow_up_1
                                 ON follow_up.encounter_id = follow_up_1.encounter_id
                            JOIN mamba_flat_encounter_follow_up_2 follow_up_2
                                 ON follow_up.encounter_id = follow_up_2.encounter_id
-                           JOIN mamba_flat_encounter_follow_up_3 follow_up_3
+                           LEFT JOIN mamba_flat_encounter_follow_up_3 follow_up_3
                                 ON follow_up.encounter_id = follow_up_3.encounter_id
-                      JOIN mamba_flat_encounter_follow_up_4 follow_up_4
-                                ON follow_up.encounter_id = follow_up_4.encounter_id
-                           JOIN mamba_dim_client_art_follow_up dim_client
-                                ON follow_up.client_id = dim_client.client_id
-                           JOIN mamba_dim_person person on person.person_id = follow_up.client_id),
+                           LEFT JOIN mamba_flat_encounter_follow_up_4 follow_up_4
+                                ON follow_up.encounter_id = follow_up_4.encounter_id),
      vl_performed_date_tmp AS (SELECT FollowUp.encounter_id,
                                       FollowUp.client_id,
                                       FollowUp.viral_load_perform_date,
@@ -76,8 +67,7 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                               FROM FollowUp
                               WHERE follow_up_status IS NOT NULL
                                 AND art_start_date IS NOT NULL
-                                AND follow_up_date <= REPORT_END_DATE
-     ),
+                                AND follow_up_date <= REPORT_END_DATE),
      latest_follow_up AS (select * from latest_follow_up_tmp where row_num = 1),
      vl_performed_date as (select * from vl_performed_date_tmp where row_num = 1),
      vl_test_received AS (SELECT current_age,
@@ -92,7 +82,7 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                                  pregnancy_status,
                                  next_visit_date,
                                  FollowUp.client_id,
-                                 uuid,
+                                 patient_uuid,
                                  CASE
                                      WHEN pregnancy_status = 'Yes' THEN 'Yes'
                                      WHEN breastfeeding_status = 'Yes' THEN 'Yes'
@@ -107,30 +97,34 @@ WITH FollowUp AS (SELECT follow_up.client_id,
                                  vlperfdate.targeted_viral_load_test_indication
                           FROM FollowUp
                                    INNER JOIN latest_follow_up ON latest_follow_up.encounter_id = FollowUp.encounter_id
+                                   LEFT JOIN mamba_dim_client client ON latest_follow_up.client_id = client.client_id
                                    LEFT JOIN vl_performed_date as vlperfdate
                                              ON vlperfdate.client_id = FollowUp.client_id)
-select
-    sex as Sex,
-    weight as Weight,
-    current_age as Age,
-    date_hiv_confirmed,
-    art_start_date as art_start_date,
-    follow_up_date as FollowUpDate,
-    pregnancy_status as IsPregnant,
-    breastfeeding_status as Breastfeeding,
-    regimen as ARVDispendsedDose,
-    regimen as ARVRegimensLine,
-    arv_dispensed_dose as ARTDoseDays,
-    next_visit_date,
-    follow_up_status,
-    treatment_end_date as art_dose_End,
-    viral_load_perform_date,
-    viral_load_test_status as viral_load_status,
-    viral_load_count,
-    viral_load_ref_date,
-    CONCAT(IFNULL(routine_viral_load_test_indication, ''), ' ', IFNULL(targeted_viral_load_test_indication, '')) ReasonForVLTest,
-    PMTCT_ART,
-    uuid as PatientGUID
+select CASE Sex
+           WHEN 'FEMALE' THEN 'F'
+           WHEN 'MALE' THEN 'M'
+           end                as                               Sex,
+       weight                 as                               Weight,
+       current_age            as                               Age,
+       date_hiv_confirmed,
+       art_start_date         as                               art_start_date,
+       follow_up_date         as                               FollowUpDate,
+       pregnancy_status       as                               IsPregnant,
+       breastfeeding_status   as                               Breastfeeding,
+       regimen                as                               ARVDispendsedDose,
+       regimen                as                               ARVRegimensLine,
+       arv_dispensed_dose     as                               ARTDoseDays,
+       next_visit_date,
+       follow_up_status,
+       treatment_end_date     as                               art_dose_End,
+       viral_load_perform_date,
+       viral_load_test_status as                               viral_load_status,
+       viral_load_count,
+       viral_load_ref_date,
+       CONCAT(IFNULL(routine_viral_load_test_indication, ''), ' ',
+              IFNULL(targeted_viral_load_test_indication, '')) ReasonForVLTest,
+       PMTCT_ART,
+       patient_uuid           as                               PatientGUID
 from vl_test_received
 where viral_load_perform_date is not null
   And viral_load_perform_date >= DATE_ADD(REPORT_END_DATE, INTERVAL -365 DAY)
