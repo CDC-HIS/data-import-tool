@@ -9,14 +9,8 @@ import shutil
 import hashlib
 import zipfile
 
-
-# Database connection parameters
-DRIVER = "ODBC Driver 17 for SQL Server"
-DB_HOST = "localhost"
-DB_USER = "sa"
-DB_PASS = "Abcd@1234"
-DB_NAME = "AggregateDB"
-
+config_path = "import_config.json"
+data_directory = "exported_data"
 # Configure logging
 logging.basicConfig(
     filename='import_tool.log',
@@ -36,6 +30,16 @@ def load_config(config_path):
     except json.JSONDecodeError:
         logging.error("Error decoding JSON configuration file.")
         return {}
+
+
+# Load configuration
+import_config = load_config(config_path)
+# Database connection parameters
+DRIVER = "ODBC Driver 17 for SQL Server"
+DB_HOST = import_config["db_properties"]['DB_HOST']
+DB_USER = import_config["db_properties"]['DB_USER']
+DB_PASS = import_config["db_properties"]['DB_PASS']
+DB_NAME = import_config["db_properties"]['DB_NAME']
 
 
 # Load configuration file for report name mappings
@@ -180,22 +184,17 @@ def move_imported_file(file_pattern):
 
 
 # Usage
-verify_and_extract_zip_files('output_csv')
+verify_and_extract_zip_files(data_directory)
 # Main execution block
 sp_parameters = set()
 try:
     with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
         cursor = conn.cursor()
         
-        # Load configuration
-        config_path = "import_config.json"
-        config = load_config(config_path)
-        
         # Specify the directory containing CSV files
-        directory = "output_csv"
         
         # Read CSV files based on the config
-        csv_data = read_csv_files_based_on_config(directory, config)
+        csv_data = read_csv_files_based_on_config(data_directory, import_config["queries_config"])
         if csv_data:
             for report, content in csv_data.items():
                 logging.info(f"Processing data for {report} ({content['description']}), "
@@ -227,13 +226,13 @@ try:
                     continue  # Skip to the next report if insert fails
                 
                 # Move processed file
-                file_pattern = os.path.join('output_csv',
+                file_pattern = os.path.join(data_directory,
                                             f"*{content['data'][1][-2]}{content['data'][1][-1]}_{content['month']}_{content['year']}.csv")
                 move_imported_file(file_pattern)
                 # Execute stored procedure
                 curr_parameters = (
-                content['data'][1][-4], content['data'][1][-3], content['data'][1][-2],
-                content['data'][1][-1], content['month'], content['year'])
+                    content['data'][1][-4], content['data'][1][-3], content['data'][1][-2],
+                    content['data'][1][-1], content['month'], content['year'])
                 sp_parameters.add(curr_parameters)
                 continue
         # Commit the transaction

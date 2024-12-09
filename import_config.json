@@ -492,7 +492,7 @@
           "Low-level viremia": "Low Level Viremia",
           "Uncontrolled": "Unsuppressed"
         },
-        "art_dose": {
+        "ARVDispendsedDose": {
           "30": "0",
           "60": "1",
           "90": "2",
@@ -500,7 +500,7 @@
           "150": "4",
           "180": "5"
         },
-        "ARVDispendsedDose": {
+        "art_dose": {
           "1a30 - D4T(30)+3TC+NVP": "0",
           "1a40 - D4T(40)+3TC+NVP": "1",
           "1b30 - D4T(30)+3TC+EFV": "2",
