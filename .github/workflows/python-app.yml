@@ -10,16 +10,11 @@ jobs:
         os: ['windows-latest']
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-
+    - name: PyInstaller Windows
+      uses: JackMcKew/pyinstaller-action-windows@v0.1.2
+            
     - run: pip install -r requirements.txt pyinstaller
     - run: pyinstaller ./data_import_tool/import_tool.spec
     # Optionally verify that it works (provided that it does not need user interaction)
-    - run: ./dist/your-code/your-code
-    - uses: actions/upload-artifact@v2
-      with:
-        path: dist/*
+  
 
