@@ -1,6 +1,5 @@
 .venv
-build
-dist
-output_csv
+release
+exported_data
 processed_csv
 *.log
