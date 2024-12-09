@@ -94,13 +94,13 @@ def zip_files_with_checksum(folder_path, zip_name):
     
     # Step 2: Generate SHA-256 checksum
     sha256_hash = hashlib.sha256()
-    with open(zip_path, "rb") as f:
+    with open(resource_path(zip_path), "rb") as f:
         for byte_block in iter(lambda: f.read(4096), b""):
             sha256_hash.update(byte_block)
     checksum = sha256_hash.hexdigest()
     
     # Step 3: Save checksum to file
-    with open(checksum_file, 'w') as f:
+    with open(resource_path(checksum_file), 'w') as f:
         f.write(checksum)
     
     logging.info(f"Zip file created at: {zip_path}")
@@ -110,7 +110,7 @@ def zip_files_with_checksum(folder_path, zip_name):
 def read_sql_file(file_path):
     """ Read and return the content of a SQL file """
     try:
-        with open(file_path, 'r') as file:
+        with open(resource_path(file_path), 'r') as file:
             return file.read().strip()
     except FileNotFoundError:
         messagebox.showerror("Error", f"SQL file {file_path} not found.")
@@ -156,7 +156,7 @@ def export_to_csv(queries, gregorian_start_date, gregorian_end_date):
             csv_file_path = os.path.join('exported_data',
                                          f"{query_name}_{facility_name}{hmiscode}_{combo_month.get()}_{entry_year.get()}.csv")
             if modified_results:
-                with open(csv_file_path, mode='w', newline='') as file:
+                with open(resource_path(csv_file_path), mode='w', newline='') as file:
                     writer = csv.writer(file)
                     writer.writerow([i[0] for i in cursor.description] + additional_columns)
                     writer.writerows(modified_results)

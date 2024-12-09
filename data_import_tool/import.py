@@ -8,8 +8,9 @@ import logging
 import shutil
 import hashlib
 import zipfile
+import sys
 
-config_path = "import_config.json"
+config_file_name = "import_config.json"
 data_directory = "exported_data"
 # Configure logging
 logging.basicConfig(
@@ -19,13 +20,18 @@ logging.basicConfig(
 )
 
 
+def resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):  # PyInstaller creates a temp folder and stores resources here
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+
 # Load configuration file for report name mappings
-def load_config(config_path):
+def load_config(config_file_name=config_file_name):
     try:
-        with open(config_path, 'r') as config_file:
+        with open(resource_path(config_file_name), 'r') as config_file:
             return json.load(config_file)
     except FileNotFoundError:
-        logging.error(f"Configuration file {config_path} not found.")
+        logging.error(f"Configuration file {resource_path(config_file_name)} not found.")
         return {}
     except json.JSONDecodeError:
         logging.error("Error decoding JSON configuration file.")
@@ -33,7 +39,7 @@ def load_config(config_path):
 
 
 # Load configuration
-import_config = load_config(config_path)
+import_config = load_config(config_file_name)
 # Database connection parameters
 DRIVER = "ODBC Driver 17 for SQL Server"
 DB_HOST = import_config["db_properties"]['DB_HOST']
@@ -45,7 +51,7 @@ DB_NAME = import_config["db_properties"]['DB_NAME']
 # Load configuration file for report name mappings
 def calculate_checksum(file_path):
     sha256_hash = hashlib.sha256()
-    with open(file_path, "rb") as f:
+    with open(resource_path(file_path), "rb") as f:
         for byte_block in iter(lambda: f.read(4096), b""):
             sha256_hash.update(byte_block)
     return sha256_hash.hexdigest()
@@ -59,7 +65,7 @@ def verify_and_extract_zip_files(directory):
             logging.error(f"No checksum file found for: {zip_path}")
             continue
         actual_checksum = calculate_checksum(zip_path)
-        with open(checksum_path, "r") as checksum_file:
+        with open(resource_path(checksum_path), "r") as checksum_file:
             expected_checksum = checksum_file.read().strip()
         if actual_checksum == expected_checksum:
             extract_zip_without_directory(zip_path, directory)
@@ -73,7 +79,7 @@ def extract_zip_without_directory(zip_path, target_directory):
         for member in zip_ref.namelist():
             if not member.endswith('/'):
                 extracted_path = os.path.join(target_directory, os.path.basename(member))
-                with open(extracted_path, 'wb') as output_file:
+                with open(resource_path(extracted_path), 'wb') as output_file:
                     output_file.write(zip_ref.read(member))
 
 
@@ -103,7 +109,7 @@ def read_csv_files_based_on_config(directory, config):
         if report_name in config:
             # Read the CSV file
             data = []
-            with open(csv_file_path, 'r') as csvfile:
+            with open(resource_path(csv_file_path), 'r') as csvfile:
                 reader = csv.reader(csvfile)
                 headers = next(reader)  # The first row is the header
                 data.append(headers)
