@@ -2,9 +2,9 @@
 ### Install Pyinstaller
 `pip install pyinstaller`
 
-### Generate release spec file
+### (Optional) Generate release spec file if it doesn't exist
 `pyinstaller --onefile --name import_tool import.py`
-### edit import_tool.spec file to include import_config.json file
+### (Optional)  edit import_tool.spec file to include import_config.json file
 `datas=[('import_config.json', '.')],`
 ### Generate program with 
 `pyinstaller import_tool.spec` 
