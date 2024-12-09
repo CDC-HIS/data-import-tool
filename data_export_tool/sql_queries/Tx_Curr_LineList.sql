@@ -62,7 +62,7 @@ select CASE Sex
            WHEN 'FEMALE' THEN 'F'
            WHEN 'MALE' THEN 'M'
            end                                                               as Sex,
-       Weight as Weight,
+       Weight,
        current_age as Age,
        fn_gregorian_to_ethiopian_calendar(follow_up_date, 'Y-M-D')           as FollowUpDate,
        follow_up_date                                                        as FollowUpDate_GC,
@@ -70,7 +70,7 @@ select CASE Sex
        next_visit_date                                                       as Next_visit_Date_GC,
        regimen                                                               as ARVRegimen,
        regimen                                                               as RegimensLine,
-       ARTDoseDays as ARTDoseDays,
+       ARTDoseDays,
        follow_up_status                                                      as FollowupStatus,
        fn_gregorian_to_ethiopian_calendar(treatment_end_date, 'Y-M-D')       as ARTDoseEndDate,
        treatment_end_date                                                    as ARTDoseEndDate_DC,
@@ -90,8 +90,8 @@ select CASE Sex
                 method_of_family_planning = 'Oral contraception' OR
                 method_of_family_planning = 'Injectable contraceptives' OR
                 method_of_family_planning = 'Condoms' THEN 'ShortTermFP' END AS FP_Status,
-       TB_SreeningStatus as TB_SreeningStatus,
-       ActiveTBDiagnosed as ActiveTBDiagnosed,
+       TB_SreeningStatus,
+       ActiveTBDiagnosed,
        nutritional_screening_result                                          as NutritionalScrenningStatus,
        CASE
            When nutritional_status_of_adult is not null then
