@@ -1,0 +1,6 @@
+import_tool.log
+build
+dist
+exported_data
+processed_csv
+.venv
