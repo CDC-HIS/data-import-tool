@@ -242,7 +242,7 @@ try:
                 
                 # Move processed file
                 file_pattern = os.path.join(data_directory,
-                                            f"*{content['data'][1][-2]}{content['data'][1][-1]}_{content['month']}_{content['year']}.csv")
+                                            f"*{content['data'][1][-2].replace(" ","")}{content['data'][1][-1]}_{content['month']}_{content['year']}.csv")
                 move_imported_file(file_pattern)
                 # Execute stored procedure
                 curr_parameters = (
