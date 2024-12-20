@@ -9,16 +9,21 @@ import shutil
 import hashlib
 import zipfile
 import sys
+from ethiopian_date import EthiopianDateConverter
+
 
 config_file_name = "import_config.json"
 data_directory = "exported_data"
+conv = EthiopianDateConverter.to_gregorian
 # Configure logging
 logging.basicConfig(
     filename='import_tool.log',
     level=logging.ERROR,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
-
+months = ["Meskerem", "Tikimt", "Hidar", "Tahsas", "Tir", "Yekatit", "Megabit", "Miyazia", "Ginbot",
+          "Sene", "Hamle", "Nehase", "Puagume"]
+month_mapping = {name: index + 1 for index, name in enumerate(months)}
 
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):  # PyInstaller creates a temp folder and stores resources here
@@ -97,14 +102,15 @@ def read_csv_files_based_on_config(directory, config):
     for csv_file_path in matching_files:
         filename = os.path.basename(csv_file_path).replace(".csv", "")
         parts = filename.split("_")
-        if len(parts) < 3:
+        if len(parts) < 4:  # Ensure the file format has at least 4 parts
             logging.error(f"Skipping file with unexpected format: {filename}")
             continue
         
-        report_name = "_".join(parts[:-3])  # Extract report name without month/year
+        facility = parts[-3]  # Extract the facility part
+        report_name = "_".join(parts[:-3])  # Extract report name without facility/month/year
         month = parts[-2]  # Extract the month part
         year = parts[-1]  # Extract the year part
-        
+
         # Check if the report name is in the config file
         if report_name in config:
             # Read the CSV file
@@ -115,11 +121,14 @@ def read_csv_files_based_on_config(directory, config):
                 data.append(headers)
                 for row in reader:
                     data.append(row)
-            report_name_with_time = f"{report_name}_{month}_{year}"
-            csv_data_by_report[report_name_with_time] = {
+            
+            # Use a composite key of report name, facility, month, and year
+            report_key = f"{report_name}_{facility}_{month}_{year}"
+            csv_data_by_report[report_key] = {
                 "description": config[report_name].get("description", ""),
                 "month": month,
                 "year": year,
+                "facility": facility,
                 "data": data,
                 "header_mapping": config[report_name].get("header_mapping", {}),
                 "field_value_mapping": config[report_name].get("field_value_mapping", {})
@@ -208,7 +217,7 @@ try:
                 
                 HMIS_CODE = content['data'][1][-1]  # Handle carefully, check row structure
                 parts = report.split("_")
-                report = "_".join(parts[:-2])  # Extract report name without month/year
+                report = "_".join(parts[:-3])  # Extract report name without month/year
                 # Check for existing data to delete
                 delete_existing = f"""
                     DELETE FROM {report}
@@ -245,8 +254,15 @@ try:
         for sp_combination in sp_parameters:
             region, zone, health_center, code, month, year = sp_combination
             try:
+                month = month_mapping.get(month)
+                year = int(year)
+                gregorian_end_date = conv(year, month, 20)
+                if month == 1:
+                    gregorian_start_date = conv(year - 1, 12, 21)
+                else:
+                    gregorian_start_date = conv(year, month - 1, 21)
                 sp_query = f"""
-                                 EXEC SP_AggregateHivindicators '{region}', '{zone}', '{health_center}', '{code}', '{month}', '{year}'
+                                 EXEC SP_AggregateHivindicatorsAll '{region}', '{zone}', '{health_center}', '{code}', '{month}', '{year}','{gregorian_start_date}','{gregorian_end_date}'
                              """
                 cursor.execute(sp_query)
                 logging.info(f"Executed stored procedure for {sp_combination}")
