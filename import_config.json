@@ -513,7 +513,7 @@
         "ReportMonth": "ReportMonth"
       },
       "field_value_mapping": {
-        "FollowupStatus": {
+        "FollowupStatusChar": {
           "Alive": "Alive on ART",
           "Restart medication": "Restart"
         },

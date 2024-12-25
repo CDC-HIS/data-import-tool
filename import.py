@@ -64,7 +64,8 @@ def calculate_checksum(file_path):
 
 def verify_and_extract_zip_files(directory):
     zip_files = glob.glob(os.path.join(directory, "*.zip"))
-    for zip_path in zip_files:
+    for index, zip_path in enumerate(zip_files, start=1):
+        print_progress_bar(index, len(zip_files), prefix='Extracting Files', suffix='Complete', length=40)
         checksum_path = f"{zip_path}_checksum.txt".replace(".zip", "")
         if not os.path.exists(checksum_path):
             logging.error(f"No checksum file found for: {zip_path}")
@@ -99,7 +100,10 @@ def read_csv_files_based_on_config(directory, config):
     
     csv_data_by_report = {}
     
-    for csv_file_path in matching_files:
+    for index, csv_file_path in enumerate(matching_files, start=1):
+        total_files=len(matching_files)
+        print_progress_bar(index+1, total_files, prefix='Reading CSV Files', suffix=f"{index}/{total_files}",
+                           length=40)
         filename = os.path.basename(csv_file_path).replace(".csv", "")
         parts = filename.split("_")
         if len(parts) < 4:  # Ensure the file format has at least 4 parts
@@ -198,6 +202,20 @@ def move_imported_file(file_pattern):
     return {}
 
 
+def print_progress_bar(iteration, total, prefix='', suffix='', length=50, fill='█', print_end="\r"):
+    """
+    Call in a loop to create terminal progress bar.
+    """
+    percent = f"{100 * (iteration / float(total)):.1f}"
+    filled_length = int(length * iteration // total)
+    bar = fill * filled_length + '-' * (length - filled_length)
+    # Print the progress bar and flush the output
+    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end=print_end)
+    sys.stdout.flush()  # Force the output to flush
+    if iteration == total:
+        print(f'\r{prefix} |{bar}| {percent}% Completed', end=print_end)
+        print()  # Print a new line when complete
+
 # Usage
 verify_and_extract_zip_files(data_directory)
 # Main execution block
@@ -211,7 +229,8 @@ try:
         # Read CSV files based on the config
         csv_data = read_csv_files_based_on_config(data_directory, import_config["queries_config"])
         if csv_data:
-            for report, content in csv_data.items():
+            total_items = len(csv_data)
+            for i, (report, content) in enumerate(csv_data.items(), start=1):
                 logging.info(f"Processing data for {report} ({content['description']}), "
                              f"Month: {content['month']}, Year: {content['year']}")
                 
@@ -249,9 +268,17 @@ try:
                     content['data'][1][-4], content['data'][1][-3], content['data'][1][-2],
                     content['data'][1][-1], content['month'], content['year'])
                 sp_parameters.add(curr_parameters)
+                print_progress_bar(i, total_items,
+                                   prefix='Processing CSV files and inserting to DB',
+                                   suffix=f"{i}/{total_items}",
+                                   length=40)
                 continue
         # Commit the transaction
-        for sp_combination in sp_parameters:
+        for i, sp_combination in enumerate(sp_parameters, start=1):
+            total_sp = len(sp_parameters)
+            print_progress_bar(i, total_sp, prefix='Executing SP',
+                               suffix=f"{i}/{total_sp}",
+                               length=40)
             region, zone, health_center, code, month, year = sp_combination
             try:
                 month = month_mapping.get(month)
