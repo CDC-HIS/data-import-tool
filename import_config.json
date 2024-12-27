@@ -514,17 +514,8 @@
       },
       "field_value_mapping": {
         "FollowupStatusChar": {
-          "Alive": "Alive on ART",
+          "Alive": "Alive",
           "Restart medication": "Restart"
-        },
-        "TPT_Type": {
-          "6H": 0,
-          "3HP": 2,
-          "": -1
-        },
-        "TPT_TypeAlt": {
-          "": -1,
-          "3HP": 0
         },
         "WHOStage": {
           "WHO stage 1 adult": "I",
@@ -655,7 +646,6 @@
           "Alive": "Alive on ART",
           "Restart medication": "Restart"
         },
-
         "Prev_Screen_Type": {
           "Initial visit": "1st time screening"
         },

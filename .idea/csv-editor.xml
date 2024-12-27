@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CsvFileAttributes">
+    <option name="attributeMap">
+      <map>
+        <entry key="/processed_csv/Tx_Curr_AHD_LineList_AreketHealthCenter701090021_Meskerem_2015.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/processed_csv/Tx_Curr_LineList_GunchreHealthCenter701110023_Meskerem_2015.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/processed_csv/Tx_Curr_LineList_LeraHealthCenter720040023_Meskerem_2016.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/processed_csv/Tx_Curr_LineList_LeraHealthCenter720040023_Tir_2015.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/processed_csv/Tx_Curr_LineList_LeraHealthCenter720040023_Tir_2016.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/processed_csv/Tx_Curr_OutComeList_GunchreHealthCenter701110023_Tir_2015.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
