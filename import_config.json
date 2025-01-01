@@ -247,11 +247,16 @@
       "field_value_mapping": {
         "follow_up_status": {
           "Alive": "Alive on ART",
-          "Restart medication": "Restart"
+          "Restart medication": "Restart",
+          "Loss to follow-up (LTFU)": "Lost",
+          "Ran away": "Dropped",
+          "Transferred out": "TO",
+          "Stop all": "STOP"
         },
         "viral_load_status": {
+          "HIV infection with high viral load": "High VL",
           "Low-level viremia": "Low Level Viremia",
-          "HIV infection with high viral load": "High VL"
+          "Uncontrolled": "Unsuppressed"
         },
         "ReasonForVLTest": {
           "First viral load test at 6 months or longer post ART ": "1st VL at 6 months or longer post ART",
@@ -263,7 +268,8 @@
           "Six months after the first viral load test at postnatal period ": "Six months after the first VL at postnatal period",
           "Three months after delivery ": "Three months after delivery",
           "Viral load after EAC: confirmatory viral load where initial viral load greater than 1000 copies per ml ": "VL after EAC: Confirmatory VL:Initial VL > 1000 copies/ml ",
-          "Viral load after EAC: repeat viral load where initial viral load greater than 50 and less than 1000 copies per ml ": "VL after EAC: Repeat VL Initial VL >50 to <= 1000 copies/ml"
+          "Viral load after EAC: repeat viral load where initial viral load greater than 50 and less than 1000 copies per ml ": "VL after EAC: Repeat VL Initial VL >50 to <= 1000 copies/ml",
+          " Suspected Antiretroviral failure": "Suspected ART Failure"
         },
         "ARVRegimensLine": {
           "4": "1",
@@ -563,7 +569,7 @@
       }
     },
     "Tx_Curr_CCANew_LineList": {
-      "description": "Description of Tx Curr Tx Curr CCA New ineList",
+      "description": "Description of Tx Curr Tx Curr CCA New LineList",
       "header_mapping": {
         "Sex": "Sex",
         "Weight": "Weight",
@@ -647,10 +653,12 @@
           "Restart medication": "Restart"
         },
         "Prev_Screen_Type": {
-          "Initial visit": "1st time screening"
+          "Initial visit": "1st time screening",
+          "Re-screening for cervical cancer after 1 year": "Rescreening after previous negative result"
         },
         "Prev_Screen_Method": {
-          "Visual Inspection of the Cervix with Acetic Acid (VIA)": "VIA"
+          "Visual Inspection of the Cervix with Acetic Acid (VIA)": "VIA",
+          "Human Papillomavirus test": "HPV DNA test"
         },
         "Prev_VIA_Screening_Result": {
           "VIA negative": "VIA Negative",
@@ -664,6 +672,99 @@
           "4": "1",
           "5": "2",
           "6": "3"
+        }
+      }
+    },
+    "Tx_Curr_CCA_LineList": {
+      "description": "Description of Tx Curr Tx Curr CCA LineList",
+      "header_mapping": {
+        "Age": "Age",
+        "art_start_date": "art_start_date",
+        "ARTDoseDays": "ARTDoseDays",
+        "ARTDoseEndDate": "ARTDoseEndDate",
+        "CCS_AcceptedNo": "CCS_AcceptedNo",
+        "CCS_AcceptedYes": "CCS_AcceptedYes",
+        "CCS_HPV_Result": "CCS_HPV_Result",
+        "ccs_next_date": "CCS_Next_Date",
+        "CCS_OfferedNo": "CCS_OfferedNo",
+        "CCS_OfferedYes": "CCS_OfferedYes",
+        "CCS_Precancerous_Treat": "CCS_Precancerous_Treat",
+        "CCS_Screen_Method": "CCS_Screen_Method",
+        "CCS_Screen_Type": "CCS_Screen_Type",
+        "CCS_ScreenDone_Date": "CCS_ScreenDone_Date",
+        "CCS_ScreenDoneNo": "CCS_ScreenDoneNo",
+        "CCS_ScreenDoneYes": "CCS_ScreenDoneYes",
+        "CCS_Suspicious_Treat": "CCS_Suspicious_Treat",
+        "ccs_treat_received_date": "CCS_Treat_Received_Date",
+        "CCS_VIA_Result": "CCS_VIA_Result",
+        "date_hiv_confirmed": "date_hiv_confirmed",
+        "follow_up_status": "follow_up_status",
+        "FollowUpDate": "FollowUpDate",
+        "FollowupStatusChar": "FollowupStatusChar",
+        "next_visit_date": "next_visit_date",
+        "PatientGUID": "PatientGUID",
+        "Sex": "Sex",
+        "Transfer_In": "Transfer_In",
+        "weight": "Weight",
+        "IsBreastfeeding": "IsBreastfeeding",
+        "PMTCT_ART": "PMTCT_ART",
+        "Region": "Region",
+        "Woreda": "Woreda",
+        "Facility": "Facility",
+        "HMISCode": "HMISCode",
+        "ReportYear": "ReportYear",
+        "ReportMonth": "ReportMonth"
+      },
+      "field_value_mapping": {
+        "CCS_Screen_Type": {
+          "Initial visit": "1st time screening",
+          "Re-screening for cervical cancer after 1 year": "Rescreening after previous negative result"
+        },
+        "CCS_Screen_Method": {
+          "Visual Inspection of the Cervix with Acetic Acid (VIA)": "VIA",
+          "Human Papillomavirus test": "HPV DNA test"
+        },
+        "FollowupStatusChar": {
+          "Alive": "Alive",
+          "Restart medication": "Restart",
+          "Loss to follow-up (LTFU)": "Lost",
+          "Ran away": "Drop",
+          "Transferred out": "To",
+          "Stop all": "STOP"
+        },
+        "follow_up_status": {
+          "Alive": 5,
+          "Restart medication": 6,
+          "Loss to follow-up (LTFU)": 2,
+          "Ran away": 3,
+          "Dead": 4,
+          "Transferred out": 0,
+          "Stop all": 1
+        },
+        "CCS_VIA_Result": {
+          "VIA negative": "VIA Negative",
+          "suspected cervical cancer": "Suspicious for Cervical Cancer",
+          "VIA positive: eligible for cryo/thermo-coagula": "VIA Positive: Eligible for Cryo/thermo-coagulation"
+        },
+        "CCS_Precancerous_Treat": {
+          "Cryosurgery of lesion of cervix": "Cryotherapy",
+          "None": "No Treatment"
+        },
+        "CCS_ScreenDoneYes": {
+          "Cervical cancer screening performed": "Yes",
+          "Cervical cancer screening not performed": "No"
+        },
+        "CCS_ScreenDoneNo": {
+          "Cervical cancer screening performed": "No",
+          "Cervical cancer screening not performed": "Yes"
+        },
+        "CCS_AcceptedNo": {
+          "No": "Yes",
+          "Yes": ""
+        },
+        "CCS_OfferedNo": {
+          "No": "Yes",
+          "Yes": ""
         }
       }
     }

@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/processed_csv/Tx_Curr_CCA_LineList_LeraHealthCenter720040023_Meskerem_2016.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/processed_csv/Tx_Curr_LineList_GunchreHealthCenter701110023_Meskerem_2015.csv">
           <value>
             <Attribute>
