@@ -749,22 +749,53 @@
         "CCS_Precancerous_Treat": {
           "Cryosurgery of lesion of cervix": "Cryotherapy",
           "None": "No Treatment"
+        }
+      }
+    },
+    "Tx_Curr_VLEligible_LineList": {
+      "description": "Description of Tx Curr VL Eligible LineList",
+      "header_mapping": {
+        "age": "Age",
+        "art_dose": "art_dose",
+        "art_dose_End": "art_dose_End",
+        "art_start_date": "art_start_date",
+        "ARVDispendsedDose": "ARVDispendsedDose",
+        "date_hiv_confirmed": "date_hiv_confirmed",
+        "date_regimen_change": "date_regimen_change",
+        "eligiblityDate": "EligiblityDate",
+        "follow_up_status": "follow_up_status",
+        "FollowUpDate": "FollowUpDate",
+        "IsPregnant": "IsPregnant",
+        "next_visit_date": "next_visit_date",
+        "PatientGUID": "PatientGUID",
+        "Sex": "Sex",
+        "viral_load_count": "viral_load_count",
+        "viral_load_perform_date": "viral_load_perform_date",
+        "viral_load_ref_date": "viral_load_ref_date",
+        "viral_load_sent_date": "viral_load_sent_date",
+        "viral_load_status": "viral_load_status",
+        "Weight": "Weight",
+        "Region": "Region",
+        "Woreda": "Woreda",
+        "Facility": "Facility",
+        "HMISCode": "HMISCode",
+        "ReportYear": "ReportYear",
+        "ReportMonth": "ReportMonth"
+      },
+      "field_value_mapping": {
+        "follow_up_status": {
+          "Alive": 5,
+          "Restart medication": 6,
+          "Loss to follow-up (LTFU)": 2,
+          "Ran away": 3,
+          "Dead": 4,
+          "Transferred out": 0,
+          "Stop all": 1
         },
-        "CCS_ScreenDoneYes": {
-          "Cervical cancer screening performed": "Yes",
-          "Cervical cancer screening not performed": "No"
-        },
-        "CCS_ScreenDoneNo": {
-          "Cervical cancer screening performed": "No",
-          "Cervical cancer screening not performed": "Yes"
-        },
-        "CCS_AcceptedNo": {
-          "No": "Yes",
-          "Yes": ""
-        },
-        "CCS_OfferedNo": {
-          "No": "Yes",
-          "Yes": ""
+        "viral_load_status": {
+          "HIV infection with high viral load": "High VL",
+          "Low-level viremia": "Low Level Viremia",
+          "Uncontrolled": "Unsuppressed"
         }
       }
     }

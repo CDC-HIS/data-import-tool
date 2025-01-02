@@ -279,9 +279,9 @@ try:
             print_progress_bar(i, total_sp, prefix='Executing SP',
                                suffix=f"{i}/{total_sp}",
                                length=40)
-            region, zone, health_center, code, month, year = sp_combination
+            region, zone, health_center, code, month_text, year = sp_combination
             try:
-                month = month_mapping.get(month)
+                month = month_mapping.get(month_text)
                 year = int(year)
                 gregorian_end_date = conv(year, month, 20)
                 if month == 1:
@@ -289,8 +289,9 @@ try:
                 else:
                     gregorian_start_date = conv(year, month - 1, 21)
                 sp_query = f"""
-                                 EXEC SP_AggregateHivindicatorsAll '{region}', '{zone}', '{health_center}', '{code}', '{month}', '{year}','{gregorian_start_date}','{gregorian_end_date}'
+                                 EXEC SP_AggregateHivindicatorsAll '{region}', '{zone}', '{health_center}', '{code}', '{month_text}', '{year}','{gregorian_start_date}','{gregorian_end_date}'
                              """
+                print(sp_query)
                 cursor.execute(sp_query)
                 logging.info(f"Executed stored procedure for {sp_combination}")
             except Exception as e:
