@@ -291,7 +291,6 @@ try:
                 sp_query = f"""
                                  EXEC SP_AggregateHivindicatorsAll '{region}', '{zone}', '{health_center}', '{code}', '{month_text}', '{year}','{gregorian_start_date}','{gregorian_end_date}'
                              """
-                print(sp_query)
                 cursor.execute(sp_query)
                 logging.info(f"Executed stored procedure for {sp_combination}")
             except Exception as e:

@@ -532,7 +532,13 @@
           "WHO stage 2 peds": "T2",
           "WHO stage 3 peds": "T3",
           "WHO stage 4 peds": "T4"
+        },
+        "Transfer_In": {
+          "Yes": 1,
+          "No": 0,
+          "": 0
         }
+
       }
     },
     "Tx_Curr_OutComeList": {
