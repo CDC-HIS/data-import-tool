@@ -1,1 +1,2 @@
 python_tds==1.16.0
+ethiopian_date == 1.0
