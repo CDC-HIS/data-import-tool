@@ -672,12 +672,32 @@
           "VIA positive: eligible for cryo/thermo-coagula": "VIA Positive: Eligible for Cryo/thermos-coagulation"
         },
         "Prev_TX_Received_for_PrecancerousLesion": {
-          "Thermocauterization of cervix": "Thermocoagulation"
+          "Cryosurgery of lesion of cervix": "Cryotherapy",
+          "Thermocauterization of cervix": "Thermocoagulation",
+          "None":"No Treatment",
+          "LEEP": ""
         },
         "RegimenLine": {
           "4": "1",
           "5": "2",
           "6": "3"
+        },
+        "Prev_TX_for_ConfirmedCxCaBasedOn_Biopsy": {
+          "surgical procedure":"Surgical Tratment",
+          "None":"No Treatment"
+        },
+         "Curr_Screen_Method": {
+          "Visual Inspection of the Cervix with Acetic Acid (VIA)": "VIA",
+          "Human Papillomavirus test": "HPV DNA test"
+        },
+        "Curr_Screen_Type": {
+          "Initial visit": "1st time screening",
+          "Re-screening for cervical cancer after 1 year": "Rescreening after previous negative result"
+        },
+        "Prev_Colposcopy_Exam_Result": {
+          "High Grade": "High Grade SIL/Suspicious Cancer",
+          "Low Grade": "Low Grade SIL/Positive",
+          "Normal": "Normal/Negative"
         }
       }
     },

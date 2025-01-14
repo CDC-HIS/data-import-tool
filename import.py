@@ -165,8 +165,10 @@ def process_data_and_insert(cursor, report_data, report):
     # Skip header row in data
     for row in data[1:]:
         # Dynamically map CSV row to database columns using the header mapping
-        values = {header_mapping.get(header, header): row[idx] for idx, header in
-                  enumerate(data[0])}
+        values = {
+            header_mapping.get(header, header): (0 if row[idx] == '' else row[idx])
+            for idx, header in enumerate(data[0])
+        }
         values["ReportYear"] = year
         values["ReportMonth"] = month
         for field, mappings in field_value_mapping.items():
