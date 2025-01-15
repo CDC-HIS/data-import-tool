@@ -538,7 +538,6 @@
           "No": 0,
           "": 0
         }
-
       }
     },
     "Tx_Curr_OutComeList": {
@@ -662,7 +661,15 @@
           "Initial visit": "1st time screening",
           "Re-screening for cervical cancer after 1 year": "Rescreening after previous negative result"
         },
+        "Curr_Screen_Type": {
+          "Initial visit": "1st time screening",
+          "Re-screening for cervical cancer after 1 year": "Rescreening after previous negative result"
+        },
         "Prev_Screen_Method": {
+          "Visual Inspection of the Cervix with Acetic Acid (VIA)": "VIA",
+          "Human Papillomavirus test": "HPV DNA test"
+        },
+        "Curr_Screen_Method": {
           "Visual Inspection of the Cervix with Acetic Acid (VIA)": "VIA",
           "Human Papillomavirus test": "HPV DNA test"
         },
@@ -671,33 +678,45 @@
           "suspected cervical cancer": "Suspicious for Cervical Cancer",
           "VIA positive: eligible for cryo/thermo-coagula": "VIA Positive: Eligible for Cryo/thermos-coagulation"
         },
+        "Curr_VIA_Screening_Result": {
+          "VIA negative": "VIA Negative",
+          "suspected cervical cancer": "Suspicious for Cervical Cancer",
+          "VIA positive: eligible for cryo/thermo-coagula": "VIA Positive: Eligible for Cryo/thermos-coagulation"
+        },
         "Prev_TX_Received_for_PrecancerousLesion": {
           "Cryosurgery of lesion of cervix": "Cryotherapy",
           "Thermocauterization of cervix": "Thermocoagulation",
-          "None":"No Treatment",
+          "None": "No Treatment",
           "LEEP": ""
         },
-        "RegimenLine": {
-          "4": "1",
-          "5": "2",
-          "6": "3"
+        "Curr_TX_Received_for_PrecancerousLesion": {
+          "Cryosurgery of lesion of cervix": "Cryotherapy",
+          "Thermocauterization of cervix": "Thermocoagulation",
+          "None": "No Treatment",
+          "LEEP": ""
         },
         "Prev_TX_for_ConfirmedCxCaBasedOn_Biopsy": {
-          "surgical procedure":"Surgical Tratment",
-          "None":"No Treatment"
+          "surgical procedure": "Surgical Tratment",
+          "None": "No Treatment"
         },
-         "Curr_Screen_Method": {
-          "Visual Inspection of the Cervix with Acetic Acid (VIA)": "VIA",
-          "Human Papillomavirus test": "HPV DNA test"
-        },
-        "Curr_Screen_Type": {
-          "Initial visit": "1st time screening",
-          "Re-screening for cervical cancer after 1 year": "Rescreening after previous negative result"
+        "Curr_TX_for_ConfirmedCxCaBasedOn_Biopsy": {
+          "surgical procedure": "Surgical Tratment",
+          "None": "No Treatment"
         },
         "Prev_Colposcopy_Exam_Result": {
           "High Grade": "High Grade SIL/Suspicious Cancer",
           "Low Grade": "Low Grade SIL/Positive",
           "Normal": "Normal/Negative"
+        },
+        "Curr_Colposcopy_Exam_Result": {
+          "High Grade": "High Grade SIL/Suspicious Cancer",
+          "Low Grade": "Low Grade SIL/Positive",
+          "Normal": "Normal/Negative"
+        },
+        "RegimenLine": {
+          "4": "1",
+          "5": "2",
+          "6": "3"
         }
       }
     },
