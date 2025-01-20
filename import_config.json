@@ -89,7 +89,11 @@
         },
         "FollowupStatus": {
           "Alive": "Alive on ART",
-          "Restart medication": "Restart"
+          "Restart medication": "Restart",
+          "Loss to follow-up (LTFU)": "Lost",
+          "Ran away": "Dropped",
+          "Transferred out": "TO",
+          "Stop all": "STOP"
         },
         "WHOStage": {
           "WHO stage 1 adult": "Stage One",
@@ -136,6 +140,28 @@
         },
         "CCA_Screened": {
           "Cervical cancer screening performed": "Yes"
+        },
+         "ARVRegimen": {
+          "1e - TDF+3TC+EFV": "1e",
+          "1j - TDF+3TC+DTG": "1j (TDF+3TC+DTG)",
+          "1k - AZT+3TC+DTG": "1k (AZT + 3TC + DTG)",
+          "2e - AZT+3TC+LPVr": "2e",
+          "2f - AZT+3TC+ATVr": "2f",
+          "2g - TDF+3TC+LPVr": "2g",
+          "2h - TDF+3TC+ATVr": "2h",
+          "4g - ABC+3TC+LPVr": "4g",
+          "4i - TDF+3TC+DTG": "4i (TDF+3TC+DTG)",
+          "4j - ABC+3TC+DTG": "4j (ABC + 3TC + DTG)",
+          "5e - ABC+3TC+LPVr": "5e",
+          "5g - TDF+3TC+EFV": "5g",
+          "5i - TDF+3TC+LPVr": "5i",
+          "5m - ABC+3TC+DTG": "5m (ABC+3TC+DTG)"
+        },
+        "TPT_SideEffect": {
+          "None": " No side effects "
+        },
+        "tb_screening_result": {
+          "Negative result": "Negative"
         }
       }
     },
@@ -275,6 +301,22 @@
           "4": "1",
           "5": "2",
           "6": "3"
+        },
+        "ARVDispendsedDose": {
+          "1e - TDF+3TC+EFV": "1e",
+          "1j - TDF+3TC+DTG": "1j (TDF+3TC+DTG)",
+          "1k - AZT+3TC+DTG": "1k (AZT + 3TC + DTG)",
+          "2e - AZT+3TC+LPVr": "2e",
+          "2f - AZT+3TC+ATVr": "2f",
+          "2g - TDF+3TC+LPVr": "2g",
+          "2h - TDF+3TC+ATVr": "2h",
+          "4g - ABC+3TC+LPVr": "4g",
+          "4i - TDF+3TC+DTG": "4i (TDF+3TC+DTG)",
+          "4j - ABC+3TC+DTG": "4j (ABC + 3TC + DTG)",
+          "5e - ABC+3TC+LPVr": "5e",
+          "5g - TDF+3TC+EFV": "5g",
+          "5i - TDF+3TC+LPVr": "5i",
+          "5m - ABC+3TC+DTG": "5m (ABC+3TC+DTG)"
         }
       }
     },
@@ -324,8 +366,12 @@
           "MALE": "M"
         },
         "follow_up_status": {
-          "Alive": "Alive on ART",
-          "Restart medication": "Restart"
+           "Alive": "Alive on ART",
+          "Restart medication": "Restart",
+          "Loss to follow-up (LTFU)": "Lost",
+          "Ran away": "Dropped",
+          "Transferred out": "TO",
+          "Stop all": "STOP"
         },
         "routine_viral_load": {
           "First viral load test at 6 months or longer post ART": "1st VL at 6 months or longer post ART",

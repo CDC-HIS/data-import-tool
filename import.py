@@ -166,7 +166,7 @@ def process_data_and_insert(cursor, report_data, report):
     for row in data[1:]:
         # Dynamically map CSV row to database columns using the header mapping
         values = {
-            header_mapping.get(header, header): (0 if row[idx] == '' else row[idx])
+            header_mapping.get(header, header): (row[idx])
             for idx, header in enumerate(data[0])
         }
         values["ReportYear"] = year
