@@ -366,7 +366,7 @@
           "MALE": "M"
         },
         "follow_up_status": {
-           "Alive": "Alive on ART",
+          "Alive": "Alive on ART",
           "Restart medication": "Restart",
           "Loss to follow-up (LTFU)": "Lost",
           "Ran away": "Dropped",
