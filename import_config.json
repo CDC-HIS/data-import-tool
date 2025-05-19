@@ -134,7 +134,8 @@
           "Malnutrition of moderate degree (Gomez: 60% to Less than 75% of Standard Weight)": "Moderate Malnutrition",
           "Malnutrition of mild degree (Gomez: 75% to Less than 90% of Standard Weight)": "Mild Malnutrition",
           "Obese Abdomen": "Obese",
-          "Severe protein-calorie malnutrition (Gomez: Less than 60% of Standard Weight)": "Sever Malnutrition"
+          "Sever Malnutrition": "Severe Malnutrition",
+          "Severe protein-calorie malnutrition (Gomez: Less than 60% of Standard Weight)": "Severe Malnutrition"
         },
         "FunctionalStatus": {
           "Patient ambulatory": "Ambulatory",
@@ -158,7 +159,8 @@
           "Community based group model by peer": "PCAD (Community Based Group model led by Peer) "
         },
         "CCA_Screened": {
-          "Cervical cancer screening performed": "Yes"
+          "Cervical cancer screening performed": "Yes",
+          "Cervical cancer screening not performed": "No"
         },
          "ARVRegimen": {
           "1e - TDF+3TC+EFV": "1e",
@@ -241,6 +243,11 @@
           "Community based group model by peer": "PCAD (Community Based Group model led by Peer)",
           "Advanced HIV disease model": "AHD (Advanced HIV Disease Model)",
           "DSD for maternal child health": "DSD for MCH"
+        },
+        "ChildDisclosueStatus": {
+          "No disclosure": 0,
+          "Full disclosure: Stage 2": 2,
+          "Full disclosure: Stage 1": 1
         },
         "FollowupStatus": {
           "Alive": "Alive on ART",
@@ -497,7 +504,8 @@
           "4h - Other specify": "68",
           "5o - TDF+3TC+DTG": "69",
           "6g - DRV/r+ABC+3TC+EFV": "70",
-          "6h - DRV/r+AZT+3TC+EFV": "71"
+          "6h - DRV/r+AZT+3TC+EFV": "71",
+          "1i - Other Adult 1st line regimen": "38"
         }
       }
     },

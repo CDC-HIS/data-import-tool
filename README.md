@@ -8,3 +8,5 @@
 `datas=[('import_config.json', '.')],`
 ### Generate program with 
 `pyinstaller import_tool.spec` 
+
+1i - Other Adult 1st line regimen
