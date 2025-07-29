@@ -87,6 +87,25 @@
           "FEMALE": "F",
           "MALE": "M"
         },
+        "No_OI": {
+          "No": "No_OI"
+        },
+        "TPT_DoseDaysNumberALT":{
+          "30": 0,
+          "60": 1,
+          "90": 2,
+          "120": 3,
+          "150": 4,
+          "180": 5
+        },
+         "TPT_DoseDaysNumberINH":{
+          "30": 0,
+          "60": 1,
+          "90": 2,
+          "120": 3,
+          "150": 4,
+          "180": 5
+        },
         "FollowupStatus": {
           "Alive": "Alive on ART",
           "Restart medication": "Restart",
@@ -115,7 +134,8 @@
           "Malnutrition of moderate degree (Gomez: 60% to Less than 75% of Standard Weight)": "Moderate Malnutrition",
           "Malnutrition of mild degree (Gomez: 75% to Less than 90% of Standard Weight)": "Mild Malnutrition",
           "Obese Abdomen": "Obese",
-          "Severe protein-calorie malnutrition (Gomez: Less than 60% of Standard Weight)": "Sever Malnutrition"
+          "Sever Malnutrition": "Severe Malnutrition",
+          "Severe protein-calorie malnutrition (Gomez: Less than 60% of Standard Weight)": "Severe Malnutrition"
         },
         "FunctionalStatus": {
           "Patient ambulatory": "Ambulatory",
@@ -139,7 +159,8 @@
           "Community based group model by peer": "PCAD (Community Based Group model led by Peer) "
         },
         "CCA_Screened": {
-          "Cervical cancer screening performed": "Yes"
+          "Cervical cancer screening performed": "Yes",
+          "Cervical cancer screening not performed": "No"
         },
          "ARVRegimen": {
           "1e - TDF+3TC+EFV": "1e",
@@ -161,6 +182,15 @@
           "None": " No side effects "
         },
         "tb_screening_result": {
+          "Negative result": "Negative"
+        },
+        "TB_Diagnostic_Result": {
+          "Negative result": "Negative"
+        },
+        "LF_LAM_result": {
+          "Negative result": "Negative"
+        },
+        "Gene_Xpert_result": {
           "Negative result": "Negative"
         }
       }
@@ -213,6 +243,11 @@
           "Community based group model by peer": "PCAD (Community Based Group model led by Peer)",
           "Advanced HIV disease model": "AHD (Advanced HIV Disease Model)",
           "DSD for maternal child health": "DSD for MCH"
+        },
+        "ChildDisclosueStatus": {
+          "No disclosure": 0,
+          "Full disclosure: Stage 2": 2,
+          "Full disclosure: Stage 1": 1
         },
         "FollowupStatus": {
           "Alive": "Alive on ART",
@@ -330,8 +365,8 @@
         "art_start_date": "art_start_date",
         "FollowUpDate": "FollowUpDate",
         "IsPregnant": "IsPregnant",
-        "ARVDispendsedDose": "ARVDispendsedDose",
-        "art_dose": "art_dose",
+        "ARVDispendsedDose": "art_dose",
+        "art_dose": "ARVDispendsedDose",
         "next_visit_date": "next_visit_date",
         "follow_up_status": "follow_up_status",
         "art_dose_End": "art_dose_End",
@@ -366,12 +401,13 @@
           "MALE": "M"
         },
         "follow_up_status": {
-          "Alive": "Alive on ART",
-          "Restart medication": "Restart",
-          "Loss to follow-up (LTFU)": "Lost",
-          "Ran away": "Dropped",
-          "Transferred out": "TO",
-          "Stop all": "STOP"
+          "Alive": 5,
+          "Restart medication": 6,
+          "Loss to follow-up (LTFU)": 2,
+          "Ran away": 3,
+          "Dead": 4,
+          "Transferred out": 0,
+          "Stop all": 1
         },
         "routine_viral_load": {
           "First viral load test at 6 months or longer post ART": "1st VL at 6 months or longer post ART",
@@ -389,7 +425,7 @@
           "Low-level viremia": "Low Level Viremia",
           "Uncontrolled": "Unsuppressed"
         },
-        "ARVDispendsedDose": {
+        "art_dose": {
           "30": "0",
           "60": "1",
           "90": "2",
@@ -397,7 +433,7 @@
           "150": "4",
           "180": "5"
         },
-        "art_dose": {
+        "ARVDispendsedDose": {
           "1a30 - D4T(30)+3TC+NVP": "0",
           "1a40 - D4T(40)+3TC+NVP": "1",
           "1b30 - D4T(30)+3TC+EFV": "2",
@@ -468,7 +504,8 @@
           "4h - Other specify": "68",
           "5o - TDF+3TC+DTG": "69",
           "6g - DRV/r+ABC+3TC+EFV": "70",
-          "6h - DRV/r+AZT+3TC+EFV": "71"
+          "6h - DRV/r+AZT+3TC+EFV": "71",
+          "1i - Other Adult 1st line regimen": "38"
         }
       }
     },
@@ -892,6 +929,10 @@
           "HIV infection with high viral load": "High VL",
           "Low-level viremia": "Low Level Viremia",
           "Uncontrolled": "Unsuppressed"
+        },
+        "Sex": {
+          "FEMALE": "F",
+          "MALE": "M"
         }
       }
     }
