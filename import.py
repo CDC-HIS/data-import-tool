@@ -26,11 +26,10 @@ months = ["Meskerem", "Tikimt", "Hidar", "Tahsas", "Tir", "Yekatit", "Megabit", 
 month_mapping = {name: index + 1 for index, name in enumerate(months)}
 
 def resource_path(relative_path):
-    if hasattr(sys, '_MEIPASS'):  # PyInstaller creates a temp folder and stores resources here
+    if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.abspath("."), relative_path)
 
-# Load configuration file for report name mappings
 def load_config(config_file_name=config_file_name):
     try:
         with open(resource_path(config_file_name), 'r') as config_file:
@@ -53,7 +52,6 @@ DB_PASS = import_config["db_properties"]['DB_PASS']
 DB_NAME = import_config["db_properties"]['DB_NAME']
 
 
-# Load configuration file for report name mappings
 def calculate_checksum(file_path):
     sha256_hash = hashlib.sha256()
     with open(file_path, "rb") as f:
@@ -79,7 +77,6 @@ def verify_and_extract_zip_files(directory):
             logging.error(f"{os.path.basename(zip_path)}: Checksum verification failed.")
 
 
-# Extract files from zip without directory structure
 def extract_zip_without_directory(zip_path, target_directory):
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         for member in zip_ref.namelist():
@@ -89,7 +86,6 @@ def extract_zip_without_directory(zip_path, target_directory):
                     output_file.write(zip_ref.read(member))
 
 
-# Read CSV files based on report_name mappings from config and include month/year
 def read_csv_files_based_on_config(directory, config):
     file_pattern = os.path.join(directory, "*.csv")
     matching_files = glob.glob(file_pattern)
@@ -110,23 +106,21 @@ def read_csv_files_based_on_config(directory, config):
             logging.error(f"Skipping file with unexpected format: {filename}")
             continue
         
-        facility = parts[-3]  # Extract the facility part
-        report_name = "_".join(parts[:-3])  # Extract report name without facility/month/year
-        month = parts[-2]  # Extract the month part
-        year = parts[-1]  # Extract the year part
+        facility = parts[-3]
+        report_name = "_".join(parts[:-3])
+        month = parts[-2]
+        year = parts[-1]
 
         # Check if the report name is in the config file
         if report_name in config:
-            # Read the CSV file
             data = []
             with open(csv_file_path, 'r') as csvfile:
                 reader = csv.reader(csvfile)
-                headers = next(reader)  # The first row is the header
+                headers = next(reader)
                 data.append(headers)
                 for row in reader:
                     data.append(row)
             
-            # Use a composite key of report name, facility, month, and year
             report_key = f"{report_name}_{facility}_{month}_{year}"
             csv_data_by_report[report_key] = {
                 "description": config[report_name].get("description", ""),
@@ -136,7 +130,6 @@ def read_csv_files_based_on_config(directory, config):
                 "data": data,
                 "header_mapping": config[report_name].get("header_mapping", {}),
                 "field_value_mapping": config[report_name].get("field_value_mapping", {})
-                # Map CSV headers to DB columns
             }
         else:
             logging.error(f"Report name '{report_name}' not found in the configuration file.")
@@ -164,7 +157,6 @@ def process_data_and_insert(cursor, report_data, report):
     
     # Skip header row in data
     for row in data[1:]:
-        # Dynamically map CSV row to database columns using the header mapping
         values = {
             header_mapping.get(header, header): (row[idx])
             for idx, header in enumerate(data[0])
@@ -180,7 +172,6 @@ def process_data_and_insert(cursor, report_data, report):
         try:
             insert_query = generate_insert_query(table_name, header_mapping)
             cursor.execute(insert_query, values)
-            # logging.info("Row %d: Inserted data into '%s'", values, table_name)
         except Exception as e:
             logging.error("Row %s: Failed to insert data into '%s': %s", values, table_name, e)
             continue
@@ -190,9 +181,7 @@ def move_imported_file(file_pattern):
     os.makedirs('processed_csv', exist_ok=True)
     for file_path in glob.glob(file_pattern):
         try:
-            # Construct the target path in 'processed_csv'
             target_path = os.path.join('processed_csv', os.path.basename(file_path))
-            # Replace the file if it already exists
             if os.path.exists(target_path):
                 os.replace(file_path, target_path)
                 logging.info(f"Replaced existing file: {target_path}")
@@ -205,18 +194,14 @@ def move_imported_file(file_pattern):
 
 
 def print_progress_bar(iteration, total, prefix='', suffix='', length=50, fill='█', print_end="\r"):
-    """
-    Call in a loop to create terminal progress bar.
-    """
     percent = f"{100 * (iteration / float(total)):.1f}"
     filled_length = int(length * iteration // total)
     bar = fill * filled_length + '-' * (length - filled_length)
-    # Print the progress bar and flush the output
     print(f'\r{prefix} |{bar}| {percent}% {suffix}', end=print_end)
-    sys.stdout.flush()  # Force the output to flush
+    sys.stdout.flush()
     if iteration == total:
         print(f'\r{prefix} |{bar}| {percent}% Completed', end=print_end)
-        print()  # Print a new line when complete
+        print()
 
 # Usage
 verify_and_extract_zip_files(data_directory)
@@ -225,9 +210,7 @@ sp_parameters = set()
 try:
     with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
         cursor = conn.cursor()
-        
-        # Specify the directory containing CSV files
-        
+
         # Read CSV files based on the config
         csv_data = read_csv_files_based_on_config(data_directory, import_config["queries_config"])
         if csv_data:
@@ -236,10 +219,9 @@ try:
                 logging.info(f"Processing data for {report} ({content['description']}), "
                              f"Month: {content['month']}, Year: {content['year']}")
                 
-                HMIS_CODE = content['data'][1][-1]  # Handle carefully, check row structure
+                HMIS_CODE = content['data'][1][-1]
                 parts = report.split("_")
-                report = "_".join(parts[:-3])  # Extract report name without month/year
-                # Check for existing data to delete
+                report = "_".join(parts[:-3])
                 delete_existing = f"""
                     DELETE FROM {report}
                     WHERE HMISCode = '{HMIS_CODE}' AND ReportYear = '{content['year']}' AND ReportMonth = '{content['month']}'
@@ -251,23 +233,20 @@ try:
                         f"Year {content['year']}, Month {content['month']}")
                 except Exception as e:
                     logging.error(f"Error executing delete query for {report}: {e}")
-                    continue  # Skip to the next report if delete fails
+                    continue
                 
-                # Process data and insert dynamically
                 try:
                     process_data_and_insert(cursor, content, report)
                 except Exception as e:
                     logging.error(f"Error inserting data for {report}: {e}")
                     conn.rollback()
-                    continue  # Skip to the next report if insert fails
+                    continue
                 
-                # Move processed file
                 file_pattern = os.path.join(data_directory,
-                                            f"*{content['data'][1][-2].replace(" ","")}{content['data'][1][-1]}_{content['month']}_{content['year']}.csv")
+                                            f"*{content['data'][1][-2].replace(" ","").replace("_","")}{content['data'][1][-1]}_{content['month']}_{content['year']}.csv")
                 move_imported_file(file_pattern)
-                # Execute stored procedure
                 curr_parameters = (
-                    content['data'][1][-4], content['data'][1][-3], content['data'][1][-2],
+                    content['data'][1][-4], content['data'][1][-3], content['data'][1][-2].replace("_",""),
                     content['data'][1][-1], content['month'], content['year'])
                 sp_parameters.add(curr_parameters)
                 print_progress_bar(i, total_items,
