@@ -941,6 +941,6 @@
     "DB_HOST": ".\\SMARTCARE40",
     "DB_USER": "sa",
     "DB_PASS": "i69nawotm",
-    "DB_NAME": "AggregateDbNew"
+    "DB_NAME": "AggregateDb"
   }
 }
