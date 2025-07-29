@@ -929,6 +929,10 @@
           "HIV infection with high viral load": "High VL",
           "Low-level viremia": "Low Level Viremia",
           "Uncontrolled": "Unsuppressed"
+        },
+        "Sex": {
+          "FEMALE": "F",
+          "MALE": "M"
         }
       }
     }
