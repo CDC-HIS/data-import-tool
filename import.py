@@ -207,6 +207,7 @@ def print_progress_bar(iteration, total, prefix='', suffix='', length=50, fill='
 verify_and_extract_zip_files(data_directory)
 # Main execution block
 sp_parameters = set()
+file_patterns = set()
 try:
     with pytds.connect(DB_HOST, DB_NAME, DB_USER, DB_PASS) as conn:
         cursor = conn.cursor()
@@ -244,7 +245,7 @@ try:
                 
                 file_pattern = os.path.join(data_directory,
                                             f"*{content['data'][1][-2].replace(" ","").replace("_","")}{content['data'][1][-1]}_{content['month']}_{content['year']}.csv")
-                move_imported_file(file_pattern)
+                file_patterns.add(file_pattern)
                 curr_parameters = (
                     content['data'][1][-4], content['data'][1][-3], content['data'][1][-2].replace("_",""),
                     content['data'][1][-1], content['month'], content['year'])
@@ -278,6 +279,9 @@ try:
                 logging.error(f"Error executing stored procedure for {report}: {e}")
                 conn.rollback()
         conn.commit()
+        # Remove files with registered pattern
+        for i,file_pattern in enumerate(file_patterns, start=1):
+            move_imported_file(file_pattern)
 except Exception as e:
     logging.error(f"Critical error in main execution block: {e}")
 finally:
