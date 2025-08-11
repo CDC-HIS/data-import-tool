@@ -155,11 +155,13 @@ def process_data_and_insert(cursor, report_data, report):
     year = report_data["year"]
     month = report_data["month"]
     
+    csv_headers = data[0]
     # Skip header row in data
     for row in data[1:]:
+        row_dict = dict(zip(csv_headers, row))
         values = {
-            header_mapping.get(header, header): (row[idx])
-            for idx, header in enumerate(data[0])
+            dest_column: row_dict.get(source_header)
+            for source_header, dest_column in header_mapping.items()
         }
         values["ReportYear"] = year
         values["ReportMonth"] = month
