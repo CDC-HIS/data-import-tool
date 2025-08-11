@@ -960,9 +960,9 @@
     }
   },
   "db_properties": {
-    "DB_HOST": "localhost",
+    "DB_HOST": ".\\SMARTCARE40",
     "DB_USER": "sa",
-    "DB_PASS": "Abcd@1234",
+    "DB_PASS": "i69nawotm",
     "DB_NAME": "AggregateDb"
   }
 }
