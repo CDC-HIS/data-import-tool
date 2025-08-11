@@ -251,7 +251,8 @@
         "ChildDisclosueStatus": {
           "No disclosure": 0,
           "Full disclosure: Stage 2": 2,
-          "Full disclosure: Stage 1": 1
+          "Full disclosure: Stage 1": 1,
+          "Full disclosure: Stage 3": 3
         },
         "FollowupStatus": {
           "Alive": "Alive on ART",
@@ -960,9 +961,9 @@
     }
   },
   "db_properties": {
-    "DB_HOST": ".\\SMARTCARE40",
+    "DB_HOST": "localhost",
     "DB_USER": "sa",
-    "DB_PASS": "i69nawotm",
+    "DB_PASS": "Abcd@1234",
     "DB_NAME": "AggregateDb"
   }
 }
