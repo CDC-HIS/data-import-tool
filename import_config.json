@@ -655,7 +655,10 @@
         "ReportMonth": "ReportMonth"
       },
       "field_value_mapping": {
-      }
+      },
+       "default_value_mapping": {
+            "AgeOut": 0
+        }
     },
     "Tx_Curr_CCANew_LineList": {
       "description": "Description of Tx Curr Tx Curr CCA New LineList",

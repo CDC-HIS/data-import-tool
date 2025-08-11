@@ -151,6 +151,7 @@ def process_data_and_insert(cursor, report_data, report):
     table_name = report
     header_mapping = report_data.get("header_mapping", {})
     field_value_mapping = report_data.get("field_value_mapping", {})
+    default_value_mapping = report_data.get("default_value_mapping", {})
     data = report_data["data"]
     year = report_data["year"]
     month = report_data["month"]
@@ -163,6 +164,10 @@ def process_data_and_insert(cursor, report_data, report):
             dest_column: row_dict.get(source_header)
             for source_header, dest_column in header_mapping.items()
         }
+
+        for dest_column, default_value in default_value_mapping.items():
+            if values.get(dest_column) is None:
+                values[dest_column] = default_value
         values["ReportYear"] = year
         values["ReportMonth"] = month
         for field, mappings in field_value_mapping.items():
