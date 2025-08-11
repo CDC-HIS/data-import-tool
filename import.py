@@ -129,7 +129,8 @@ def read_csv_files_based_on_config(directory, config):
                 "facility": facility,
                 "data": data,
                 "header_mapping": config[report_name].get("header_mapping", {}),
-                "field_value_mapping": config[report_name].get("field_value_mapping", {})
+                "field_value_mapping": config[report_name].get("field_value_mapping", {}),
+                "default_value_mapping": config[report_name].get("default_value_mapping", {})
             }
         else:
             logging.error(f"Report name '{report_name}' not found in the configuration file.")

@@ -82,6 +82,8 @@
         "ReportYear": "ReportYear",
         "ReportMonth": "ReportMonth"
       },
+      "default_value_mapping": {
+      },
       "field_value_mapping": {
         "Sex": {
           "FEMALE": "F",
@@ -90,7 +92,7 @@
         "No_OI": {
           "No": "No_OI"
         },
-        "TPT_DoseDaysNumberALT":{
+        "TPT_DoseDaysNumberALT": {
           "30": 0,
           "60": 1,
           "90": 2,
@@ -98,7 +100,7 @@
           "150": 4,
           "180": 5
         },
-         "TPT_DoseDaysNumberINH":{
+        "TPT_DoseDaysNumberINH": {
           "30": 0,
           "60": 1,
           "90": 2,
@@ -162,7 +164,7 @@
           "Cervical cancer screening performed": "Yes",
           "Cervical cancer screening not performed": "No"
         },
-         "ARVRegimen": {
+        "ARVRegimen": {
           "1e - TDF+3TC+EFV": "1e",
           "1j - TDF+3TC+DTG": "1j (TDF+3TC+DTG)",
           "1k - AZT+3TC+DTG": "1k (AZT + 3TC + DTG)",
@@ -235,6 +237,8 @@
         "ReportYear": "ReportYear",
         "ReportMonth": "ReportMonth"
       },
+      "default_value_mapping": {
+      },
       "field_value_mapping": {
         "DSD_Category": {
           "Appointment spacing model / 6MMD": "Appointment Spacing Model (ASM)/6MMD",
@@ -304,6 +308,8 @@
         "HMISCode": "HMISCode",
         "ReportYear": "ReportYear",
         "ReportMonth": "ReportMonth"
+      },
+      "default_value_mapping": {
       },
       "field_value_mapping": {
         "follow_up_status": {
@@ -394,6 +400,8 @@
         "HMISCode": "HMISCode",
         "ReportYear": "ReportYear",
         "ReportMonth": "ReportMonth"
+      },
+      "default_value_mapping": {
       },
       "field_value_mapping": {
         "Sex": {
@@ -541,6 +549,8 @@
         "ReportYear": "ReportYear",
         "ReportMonth": "ReportMonth"
       },
+      "default_value_mapping": {
+      },
       "field_value_mapping": {
         "Sex": {
           "FEMALE": "F",
@@ -601,6 +611,8 @@
         "ReportYear": "ReportYear",
         "ReportMonth": "ReportMonth"
       },
+      "default_value_mapping": {
+      },
       "field_value_mapping": {
         "FollowupStatusChar": {
           "Alive": "Alive",
@@ -656,9 +668,9 @@
       },
       "field_value_mapping": {
       },
-       "default_value_mapping": {
-            "AgeOut": 0
-        }
+      "default_value_mapping": {
+        "AgeOut": 0
+      }
     },
     "Tx_Curr_CCANew_LineList": {
       "description": "Description of Tx Curr Tx Curr CCA New LineList",
@@ -738,6 +750,8 @@
         "HMISCode": "HMISCode",
         "ReportYear": "ReportYear",
         "ReportMonth": "ReportMonth"
+      },
+      "default_value_mapping": {
       },
       "field_value_mapping": {
         "FollowUpStatus": {
@@ -847,6 +861,8 @@
         "ReportYear": "ReportYear",
         "ReportMonth": "ReportMonth"
       },
+      "default_value_mapping": {
+      },
       "field_value_mapping": {
         "CCS_Screen_Type": {
           "Initial visit": "1st time screening",
@@ -918,6 +934,8 @@
         "HMISCode": "HMISCode",
         "ReportYear": "ReportYear",
         "ReportMonth": "ReportMonth"
+      },
+      "default_value_mapping": {
       },
       "field_value_mapping": {
         "follow_up_status": {
