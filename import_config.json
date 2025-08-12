@@ -514,7 +514,11 @@
           "5o - TDF+3TC+DTG": "69",
           "6g - DRV/r+ABC+3TC+EFV": "70",
           "6h - DRV/r+AZT+3TC+EFV": "71",
-          "1i - Other Adult 1st line regimen": "38"
+          "1i - Other Adult 1st line regimen": "38",
+          "2j -TDF+3TC+DTG": "69",
+          "2L - Other Adult 2nd line regimen": "40",
+          "3a -  DRV/r+DTG+AZT+3TC": "42",
+          "3b - DRV/r+DTG+TDF+3TC": "43"
         }
       }
     },
