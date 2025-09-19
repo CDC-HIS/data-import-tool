@@ -21,9 +21,15 @@ logging.basicConfig(
     level=logging.ERROR,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
-months = ["Meskerem", "Tikimt", "Hidar", "Tahsas", "Tir", "Yekatit", "Megabit", "Miyazia", "Ginbot",
-          "Sene", "Hamle", "Nehase", "Puagume"]
+months = ["Meskerem", "Tikimt", "Hidar", "Tahsas", "Tir", "Yekatit", "Megabit", "Miazia", "Ginbot",
+          "Sene", "Hamle", "Nehassie", "Puagume"]
 month_mapping = {name: index + 1 for index, name in enumerate(months)}
+
+variations = {
+    "Miyazia": "Miazia",
+    "Nehase":"Nehassie"
+}
+
 
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
@@ -270,8 +276,9 @@ try:
                                suffix=f"{i}/{total_sp}",
                                length=40)
             region, zone, health_center, code, month_text, year = sp_combination
+            month_name = variations.get(month_text, month_text)
             try:
-                month = month_mapping.get(month_text)
+                month = month_mapping.get(month_name)
                 year = int(year)
                 gregorian_end_date = conv(year, month, 20)
                 if month == 1:
@@ -279,7 +286,7 @@ try:
                 else:
                     gregorian_start_date = conv(year, month - 1, 21)
                 sp_query = f"""
-                                 EXEC SP_AggregateHivindicatorsAll '{region}', '{zone}', '{health_center}', '{code}', '{month_text}', '{year}','{gregorian_start_date}','{gregorian_end_date}'
+                                 EXEC SP_AggregateHivindicatorsAll '{region}', '{zone}', '{health_center}', '{code}', '{month_name}', '{year}','{gregorian_start_date}','{gregorian_end_date}'
                              """
                 cursor.execute(sp_query)
                 logging.info(f"Executed stored procedure for {sp_combination}")

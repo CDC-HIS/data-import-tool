@@ -194,6 +194,10 @@
         },
         "Gene_Xpert_result": {
           "Negative result": "Negative"
+        },
+        "ReportMonth": {
+          "Miyazia": "Miazia",
+          "Nehase": "Nehassie"
         }
       }
     },
@@ -276,6 +280,10 @@
           "4": "1",
           "5": "2",
           "6": "3"
+        },
+        "ReportMonth": {
+          "Miyazia": "Miazia",
+          "Nehase": "Nehassie"
         }
       }
     },
@@ -359,6 +367,10 @@
           "5g - TDF+3TC+EFV": "5g",
           "5i - TDF+3TC+LPVr": "5i",
           "5m - ABC+3TC+DTG": "5m (ABC+3TC+DTG)"
+        },
+        "ReportMonth": {
+          "Miyazia": "Miazia",
+          "Nehase": "Nehassie"
         }
       }
     },
@@ -519,6 +531,10 @@
           "2L - Other Adult 2nd line regimen": "40",
           "3a -  DRV/r+DTG+AZT+3TC": "42",
           "3b - DRV/r+DTG+TDF+3TC": "43"
+        },
+        "ReportMonth": {
+          "Miyazia": "Miazia",
+          "Nehase": "Nehassie"
         }
       }
     },
@@ -566,6 +582,10 @@
           "Restart medication": "Restart"
         },
         "viral_load_status": {
+        },
+        "ReportMonth": {
+          "Miyazia": "Miazia",
+          "Nehase": "Nehassie"
         }
       }
     },
@@ -637,6 +657,10 @@
           "Yes": 1,
           "No": 0,
           "": 0
+        },
+        "ReportMonth": {
+          "Miyazia": "Miazia",
+          "Nehase": "Nehassie"
         }
       }
     },
@@ -675,6 +699,10 @@
       },
       "default_value_mapping": {
         "AgeOut": 0
+      },
+      "ReportMonth": {
+        "Miyazia": "Miazia",
+        "Nehase": "Nehassie"
       }
     },
     "Tx_Curr_CCANew_LineList": {
@@ -823,6 +851,10 @@
           "4": "1",
           "5": "2",
           "6": "3"
+        },
+        "ReportMonth": {
+          "Miyazia": "Miazia",
+          "Nehase": "Nehassie"
         }
       }
     },
@@ -907,6 +939,10 @@
           "Yes": 1,
           "No": 0,
           "": 0
+        },
+        "ReportMonth": {
+          "Miyazia": "Miazia",
+          "Nehase": "Nehassie"
         }
       }
     },
@@ -960,6 +996,10 @@
         "Sex": {
           "FEMALE": "F",
           "MALE": "M"
+        },
+        "ReportMonth": {
+          "Miyazia": "Miazia",
+          "Nehase": "Nehassie"
         }
       }
     }
