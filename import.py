@@ -21,13 +21,15 @@ logging.basicConfig(
     level=logging.ERROR,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
-months = ["Meskerem", "Tikimt", "Hidar", "Tahsas", "Tir", "Yekatit", "Megabit", "Miazia", "Ginbot",
+months = ["Meskerem", "Tikimit", "Hidar", "Tahisas", "Tir", "Yekatit", "Megabit", "Miazia", "Ginbot",
           "Sene", "Hamle", "Nehassie", "Puagume"]
 month_mapping = {name: index + 1 for index, name in enumerate(months)}
 
 variations = {
     "Miyazia": "Miazia",
-    "Nehase":"Nehassie"
+    "Nehase":"Nehassie",
+    "Tikimt":"Tikimit",
+    "Tahsas":"Tahisas"
 }
 
 
@@ -176,7 +178,7 @@ def process_data_and_insert(cursor, report_data, report):
             if values.get(dest_column) is None:
                 values[dest_column] = default_value
         values["ReportYear"] = year
-        values["ReportMonth"] = month
+        values["ReportMonth"] = variations.get(month, month)
         for field, mappings in field_value_mapping.items():
             if field in values:
                 original_value = values[field]
@@ -239,7 +241,7 @@ try:
                 report = "_".join(parts[:-3])
                 delete_existing = f"""
                     DELETE FROM {report}
-                    WHERE HMISCode = '{HMIS_CODE}' AND ReportYear = '{content['year']}' AND ReportMonth = '{content['month']}'
+                    WHERE HMISCode = '{HMIS_CODE}' AND ReportYear = '{content['year']}' AND ReportMonth = '{variations.get(content['month'], content['month'])}'
                 """
                 try:
                     cursor.execute(delete_existing)
