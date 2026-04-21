@@ -416,9 +416,21 @@
           "Viral load after EAC: confirmatory viral load where initial viral load greater than 1000 copies per ml": "Viral load after EAC: Repeat or confirmatory VL: initial viral load greater than 1000",
           "Viral load after EAC: repeat viral load where initial viral load greater than 50 and less than 1000 copies per ml": "Viral load after EAC: Repeat or confirmatory VL: initial viral load > 50 and < 1000"
         },
+        "routine_viral_load_cf":{
+          "First viral load test at 6 months or longer post ART": "1st VL at 6 months or longer post ART",
+          "Second viral load test at 12 months post ART": "2nd VL at 12 month post ART",
+          "Annual viral load test": "Annual VL Test",
+          "Viral load after EAC: confirmatory viral load where initial viral load greater than 1000 copies per ml": "Viral load after EAC: Repeat or confirmatory VL: initial viral load greater than 1000",
+          "Viral load after EAC: repeat viral load where initial viral load greater than 50 and less than 1000 copies per ml": "Viral load after EAC: Repeat or confirmatory VL: initial viral load > 50 and < 1000"
+        },
         "target_cf": {
           "Suspected Antiretroviral failure": "Suspected ART Failure",
-          "Repeat or confirmatory VL: initial viral load greater than 1000": "Repeat or confirmatory VL > 1000 copies per ml"
+          "Repeat or confirmatory VL: initial viral load greater than 1000": "Repeat or confirmatory VL > 1000 copies per ml",
+          "First viral load test at 6 months or longer post ART": "1st VL at 6 months or longer post ART",
+          "Second viral load test at 12 months post ART": "2nd VL at 12 month post ART",
+          "Annual viral load test": "Annual VL Test",
+          "Viral load after EAC: confirmatory viral load where initial viral load greater than 1000 copies per ml": "Viral load after EAC: Repeat or confirmatory VL: initial viral load greater than 1000",
+          "Viral load after EAC: repeat viral load where initial viral load greater than 50 and less than 1000 copies per ml": "Viral load after EAC: Repeat or confirmatory VL: initial viral load > 50 and < 1000"
         },
         "viral_load_status": {
           "HIV infection with high viral load": "High VL",
