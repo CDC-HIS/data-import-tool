@@ -201,6 +201,27 @@
           "Tikimt": "Tikimit",
           "Tahsas": "Tahisas"
         }
+      },
+      "max_length": {
+        "ARTDoseDays": 10,
+        "WHOStage": 20,
+        "ARVRegimen": 50,
+        "AdheranceLevel": 30,
+        "IsPregnant": 10,
+        "DSD_Category": 255,
+        "NutritionalStatus": 50,
+        "FunctionalStatus": 30,
+        "FpMethodUsed": 50,
+        "TPT_Type": 20,
+        "No_OI": 50,
+        "TPT_SideEffect": 200,
+        "Viral_Load_Status": 20,
+        "OI_Other": 50,
+        "Med1": 255,
+        "Med2": 255,
+        "Woreda": 100,
+        "Facility": 100,
+        "Region": 100
       }
     },
     "Tx_Curr_LineList": {
@@ -244,6 +265,8 @@
         "ReportMonth": "ReportMonth"
       },
       "default_value_mapping": {
+        "ChildDisclosueStatus": "",
+        "TherapeuticFoodProvided": ""
       },
       "field_value_mapping": {
         "DSD_Category": {
@@ -255,10 +278,10 @@
           "DSD for maternal child health": "DSD for MCH"
         },
         "ChildDisclosueStatus": {
-          "No disclosure": 0,
-          "Full disclosure: Stage 2": 2,
-          "Full disclosure: Stage 1": 1,
-          "Full disclosure: Stage 3": 3
+          "No disclosure": "DS0",
+          "Full disclosure: Stage 2": "DS1",
+          "Full disclosure: Stage 1": "DS2",
+          "Full disclosure: Stage 3": "DS3"
         },
         "FollowupStatus": {
           "Alive": "Alive on ART",
@@ -289,6 +312,23 @@
           "Tikimt": "Tikimit",
           "Tahsas": "Tahisas"
         }
+      },
+      "max_length": {
+        "ARVRegimen": 50,
+        "RegimensLine": 5,
+        "DSD_Category": 255,
+        "AdheranceLevel": 30,
+        "ActiveTBDiagnosed": 10,
+        "FP_Status": 30,
+        "ARTDoseDays": 10,
+        "SexForNutrition": 30,
+        "NutritionalScrenningStatus": 50,
+        "FollowupStatus": 30,
+        "TB_SreeningStatus": 30,
+        "TherapeuticFoodProvided": 20,
+        "Woreda": 100,
+        "Facility": 100,
+        "Region": 100
       }
     },
     "Tx_Curr_VLTestReceived_LineList": {
@@ -378,6 +418,17 @@
           "Tikimt": "Tikimit",
           "Tahsas": "Tahisas"
         }
+      },
+      "max_length": {
+        "ARVDispendsedDose": 50,
+        "ARVRegimensLine": 5,
+        "ARTDoseDays": 10,
+        "follow_up_status": 50,
+        "viral_load_status": 100,
+        "ReasonForVLTest": 255,
+        "Woreda": 100,
+        "Facility": 100,
+        "Region": 100
       }
     },
     "Tx_Curr_HVL_LineList": {
@@ -421,6 +472,7 @@
         "ReportMonth": "ReportMonth"
       },
       "default_value_mapping": {
+        "ARVDispendsedDose": ""
       },
       "field_value_mapping": {
         "Sex": {
@@ -436,7 +488,14 @@
           "Transferred out": 0,
           "Stop all": 1
         },
-        "routine_viral_load": {
+         "routine_viral_load": {
+          "First viral load test at 6 months or longer post ART": "1st VL at 6 months or longer post ART",
+          "Second viral load test at 12 months post ART": "2nd VL at 12 month post ART",
+          "Annual viral load test": "Annual VL Test",
+          "Viral load after EAC: confirmatory viral load where initial viral load greater than 1000 copies per ml": "Viral load after EAC: Repeat or confirmatory VL: initial viral load greater than 1000",
+          "Viral load after EAC: repeat viral load where initial viral load greater than 50 and less than 1000 copies per ml": "Viral load after EAC: Repeat or confirmatory VL: initial viral load > 50 and < 1000"
+        },
+        "routine_viral_load_cf":{
           "First viral load test at 6 months or longer post ART": "1st VL at 6 months or longer post ART",
           "Second viral load test at 12 months post ART": "2nd VL at 12 month post ART",
           "Annual viral load test": "Annual VL Test",
@@ -445,7 +504,21 @@
         },
         "target_cf": {
           "Suspected Antiretroviral failure": "Suspected ART Failure",
-          "Repeat or confirmatory VL: initial viral load greater than 1000": "Repeat or confirmatory VL > 1000 copies per ml"
+          "Repeat or confirmatory VL: initial viral load greater than 1000": "Repeat or confirmatory VL > 1000 copies per ml",
+          "First viral load test at 6 months or longer post ART": "1st VL at 6 months or longer post ART",
+          "Second viral load test at 12 months post ART": "2nd VL at 12 month post ART",
+          "Annual viral load test": "Annual VL Test",
+          "Viral load after EAC: confirmatory viral load where initial viral load greater than 1000 copies per ml": "Viral load after EAC: Repeat or confirmatory VL: initial viral load greater than 1000",
+          "Viral load after EAC: repeat viral load where initial viral load greater than 50 and less than 1000 copies per ml": "Viral load after EAC: Repeat or confirmatory VL: initial viral load > 50 and < 1000"
+        },
+        "target": {
+             "Suspected Antiretroviral failure": "Suspected ART Failure",
+          "Repeat or confirmatory VL: initial viral load greater than 1000": "Repeat or confirmatory VL > 1000 copies per ml",
+          "First viral load test at 6 months or longer post ART": "1st VL at 6 months or longer post ART",
+          "Second viral load test at 12 months post ART": "2nd VL at 12 month post ART",
+          "Annual viral load test": "Annual VL Test",
+          "Viral load after EAC: confirmatory viral load where initial viral load greater than 1000 copies per ml": "Viral load after EAC: Repeat or confirmatory VL: initial viral load greater than 1000",
+          "Viral load after EAC: repeat viral load where initial viral load greater than 50 and less than 1000 copies per ml": "Viral load after EAC: Repeat or confirmatory VL: initial viral load > 50 and < 1000"
         },
         "viral_load_status": {
           "HIV infection with high viral load": "High VL",
@@ -545,6 +618,20 @@
           "Tikimt": "Tikimit",
           "Tahsas": "Tahisas"
         }
+      },
+      "max_length": {
+        "follow_up_status": 50,
+        "ARVDispendsedDose": 10,
+        "viral_load_status_cf": 100,
+        "art_dose": 10,
+        "viral_load_status": 50,
+        "routine_viral_load": 100,
+        "routine_viral_load_cf": 100,
+        "target": 100,
+        "target_cf": 100,
+        "Woreda": 100,
+        "Facility": 100,
+        "Region": 100
       }
     },
     "Tx_Curr_VLEligibleNew_LineList": {
@@ -598,6 +685,15 @@
           "Tikimt": "Tikimit",
           "Tahsas": "Tahisas"
         }
+      },
+      "max_length": {
+        "ARVDispendsedDose": 50,
+        "ARTDoseDays": 10,
+        "follow_up_status": 50,
+        "viral_load_status": 100,
+        "Woreda": 100,
+        "Facility": 100,
+        "Region": 100
       }
     },
     "Tx_Curr_TPT_LineList": {
@@ -648,6 +744,7 @@
         "ReportMonth": "ReportMonth"
       },
       "default_value_mapping": {
+        "transfer_in": 0
       },
       "field_value_mapping": {
         "FollowupStatusChar": {
@@ -675,6 +772,21 @@
           "Tikimt": "Tikimit",
           "Tahsas": "Tahisas"
         }
+      },
+      "max_length": {
+        "FollowupStatus": 3,
+        "FollowupStatusChar": 30,
+        "TPT_Type": 10,
+        "TPT_TypeAlt": 50,
+        "Transfer_In": 10,
+        "ARTDoseDays": 10,
+        "TPT_TypeChar": 50,
+        "TB_SpecimenType": 100,
+        "ActiveTBDiagnosed": 10,
+        "WHOStage": 10,
+        "Woreda": 100,
+        "Facility": 100,
+        "Region": 100
       }
     },
     "Tx_Curr_OutComeList": {
@@ -873,6 +985,43 @@
           "Tikimt": "Tikimit",
           "Tahsas": "Tahisas"
         }
+      },
+      "max_length": {
+        "FollowUpStatus": 30,
+        "ARVRegimen": 50,
+        "RegimenLine": 5,
+        "EligibilityReason": 100,
+        "Prev_Screen_Type": 100,
+        "Prev_Screen_Method": 100,
+        "Prev_HPV_SubType": 100,
+        "Prev_HPV_Result": 100,
+        "Prev_VIA_Screening_Result": 100,
+        "Prev_Cytology_Result": 100,
+        "Prev_Colposcopy_Exam_Result": 100,
+        "Prev_TX_Received_for_PrecancerousLesion": 100,
+        "Prev_TX_for_ConfirmedCxCaBasedOn_Biopsy": 100,
+        "Prev_ReferralStatus": 100,
+        "Prev_Reason_for_Referral": 100,
+        "Prev_CCS_Screen_Result": 100,
+        "Counselled": 5,
+        "Accepted": 5,
+        "Curr_Screen_Type": 100,
+        "Curr_Screen_Method": 100,
+        "Curr_HPV_SubType": 100,
+        "Curr_HPV_Result": 100,
+        "Curr_VIA_Screening_Result": 100,
+        "Curr_Cytology_Result": 100,
+        "Curr_Colposcopy_Exam_Result": 100,
+        "Curr_Biopsy_Result": 100,
+        "Curr_TX_Received_for_PrecancerousLesion": 100,
+        "Curr_TX_for_ConfirmedCxCaBasedOn_Biopsy": 100,
+        "Curr_ReferralStatus": 100,
+        "Seen": 5,
+        "Curr_Reason_for_Referral": 100,
+        "Curr_CCS_Screen_Result": 100,
+        "Woreda": 100,
+        "Facility": 100,
+        "Region": 100
       }
     },
     "Tx_Curr_CCA_LineList": {
@@ -963,6 +1112,11 @@
           "Tikimt": "Tikimit",
           "Tahsas": "Tahisas"
         }
+      },
+      "max_length": {
+        "ARTDoseDays": 10,
+        "follow_up_status": 3,
+        "FollowupStatusChar": 30
       }
     },
     "Tx_Curr_VLEligible_LineList": {
@@ -1022,6 +1176,12 @@
           "Tikimt": "Tikimit",
           "Tahsas": "Tahisas"
         }
+      },
+      "max_length": {
+        "ARVDispendsedDose": 10,
+        "art_dose": 10,
+        "follow_up_status": 50,
+        "viral_load_status": 100
       }
     }
   },

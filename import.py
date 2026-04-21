@@ -18,7 +18,7 @@ conv = EthiopianDateConverter.to_gregorian
 # Configure logging
 logging.basicConfig(
     filename='import_tool.log',
-    level=logging.ERROR,
+    level=logging.WARNING,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 months = ["Meskerem", "Tikimit", "Hidar", "Tahisas", "Tir", "Yekatit", "Megabit", "Miazia", "Ginbot",
@@ -138,7 +138,8 @@ def read_csv_files_based_on_config(directory, config):
                 "data": data,
                 "header_mapping": config[report_name].get("header_mapping", {}),
                 "field_value_mapping": config[report_name].get("field_value_mapping", {}),
-                "default_value_mapping": config[report_name].get("default_value_mapping", {})
+                "default_value_mapping": config[report_name].get("default_value_mapping", {}),
+                "max_length": config[report_name].get("max_length", {})
             }
         else:
             logging.error(f"Report name '{report_name}' not found in the configuration file.")
@@ -161,12 +162,12 @@ def process_data_and_insert(cursor, report_data, report):
     header_mapping = report_data.get("header_mapping", {})
     field_value_mapping = report_data.get("field_value_mapping", {})
     default_value_mapping = report_data.get("default_value_mapping", {})
+    max_length_mapping = report_data.get("max_length", {})
     data = report_data["data"]
     year = report_data["year"]
     month = report_data["month"]
-    
+
     csv_headers = data[0]
-    # Skip header row in data
     for row in data[1:]:
         row_dict = dict(zip(csv_headers, row))
         values = {
@@ -182,9 +183,17 @@ def process_data_and_insert(cursor, report_data, report):
         for field, mappings in field_value_mapping.items():
             if field in values:
                 original_value = values[field]
-                # Check if the original value has a replacement in mappings
                 if original_value in mappings:
-                    values[field] = mappings[original_value]  # Replace value
+                    values[field] = mappings[original_value]
+        for dest_column, max_len in max_length_mapping.items():
+            if dest_column in values and isinstance(values[dest_column], str):
+                if len(values[dest_column]) > max_len:
+                    logging.warning(
+                        "Truncated '%s' in '%s' from %d to %d chars (PatientGUID=%s)",
+                        dest_column, table_name, len(values[dest_column]), max_len,
+                        values.get("PatientGUID", "unknown")
+                    )
+                    values[dest_column] = values[dest_column][:max_len]
         try:
             insert_query = generate_insert_query(table_name, header_mapping)
             cursor.execute(insert_query, values)
