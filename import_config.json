@@ -462,6 +462,10 @@
         "viral_load_status_cf": "viral_load_status_cf",
         "viral_load_count_cf": "viral_load_count_cf",
         "routine_viral_load_cf": "routine_viral_load_cf",
+        "hvl_Regimen": "HVL_Regimen",
+        "current_regimen": "Current_regimen",
+        "Adherance": "Adherance",
+        "follow_up_status_text": "follow_up_status_text",
         "target_cf": "target_cf",
         "PatientGUID": "PatientGUID",
         "Region": "Region",
@@ -478,6 +482,15 @@
         "Sex": {
           "FEMALE": "F",
           "MALE": "M"
+        },
+        "follow_up_status_text": {
+          "Alive": "Alive on ART",
+          "Restart medication": "Restart",
+          "Loss to follow-up (LTFU)": "Lost",
+          "Ran away": "Dropped",
+          "Transferred out": "TO",
+          "Stop all": "STOP"
+
         },
         "follow_up_status": {
           "Alive": 5,
